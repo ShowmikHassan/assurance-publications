@@ -1,0 +1,352 @@
+/**
+ * Assurance Publications — About Us page
+ * =======================================
+ * Loaded only on the about-us page (see inc/setup.php). Reuses the shared
+ * token system, .ap-band, .ap-eyebrow, .ap-section-title and .ap-btn
+ * primitives from base.css rather than redeclaring type or colour.
+ */
+
+/* ==========================================================================
+   1. Hero
+   ========================================================================== */
+
+.ap-about-hero {
+	background: var(--ap-gradient-navy);
+	padding-block: var(--ap-s-20) var(--ap-s-16);
+}
+
+.ap-about-hero__inner {
+	max-width: 46rem;
+	text-align: center;
+	margin-inline: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.ap-about-hero .ap-eyebrow {
+	color: var(--ap-accent-soft);
+	justify-content: center;
+}
+
+.ap-about-hero__title {
+	color: #fff;
+	font-size: clamp(1.75rem, 4vw, var(--ap-text-3xl));
+	line-height: var(--ap-lh-tight);
+	margin: 0 0 var(--ap-s-4);
+}
+
+.ap-about-hero__sub {
+	color: rgba(245, 247, 250, 0.82);
+	font-size: var(--ap-text-md);
+	line-height: var(--ap-lh-loose);
+	margin: 0 0 var(--ap-s-8);
+}
+
+/* ==========================================================================
+   2. Stats strip
+   ========================================================================== */
+
+.ap-about-stats {
+	background: var(--ap-surface);
+	padding-block: var(--ap-s-10);
+}
+
+.ap-about-stats__grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-lg);
+	box-shadow: var(--ap-shadow-md);
+	overflow: hidden;
+}
+
+.ap-stat {
+	padding: var(--ap-s-6) var(--ap-s-4);
+	text-align: center;
+	border-inline-end: 1px solid var(--ap-line-soft);
+}
+
+.ap-stat:last-child {
+	border-inline-end: none;
+}
+
+.ap-stat__num {
+	display: block;
+	font-family: var(--ap-font);
+	font-weight: var(--ap-fw-bold);
+	font-size: clamp(1.5rem, 3vw, var(--ap-text-2xl));
+	color: var(--ap-accent);
+	font-variant-numeric: tabular-nums lining-nums;
+}
+
+.ap-stat__label {
+	display: block;
+	margin-block-start: var(--ap-s-1);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-muted);
+}
+
+@media (max-width: 767px) {
+	.ap-about-stats__grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.ap-stat {
+		border-block-end: 1px solid var(--ap-line-soft);
+	}
+
+	.ap-stat:nth-child(2n) {
+		border-inline-end: none;
+	}
+}
+
+/* ==========================================================================
+   3. Story
+   ========================================================================== */
+
+.ap-about-story__grid {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr;
+	gap: var(--ap-s-12);
+	align-items: center;
+}
+
+.ap-about-story__text p {
+	color: var(--ap-ink-soft);
+	line-height: var(--ap-lh-loose);
+	margin-block: 0 var(--ap-s-4);
+}
+
+.ap-about-story__text p:last-child {
+	margin-block-end: 0;
+}
+
+.ap-about-story__media {
+	display: flex;
+	justify-content: center;
+}
+
+.ap-about-story__badge {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--ap-s-2);
+	text-align: center;
+	background: var(--ap-gradient-navy);
+	color: #fff;
+	border-radius: var(--ap-r-lg);
+	padding: var(--ap-s-12) var(--ap-s-8);
+	box-shadow: var(--ap-shadow-lg);
+	inline-size: 100%;
+	max-inline-size: 280px;
+}
+
+.ap-about-story__badge .ap-icon {
+	color: var(--ap-accent-soft);
+	margin-block-end: var(--ap-s-2);
+}
+
+.ap-about-story__badge strong {
+	font-size: var(--ap-text-lg);
+}
+
+.ap-about-story__badge span {
+	color: rgba(245, 247, 250, 0.72);
+	font-size: var(--ap-text-sm);
+}
+
+@media (max-width: 900px) {
+	.ap-about-story__grid {
+		grid-template-columns: 1fr;
+	}
+
+	.ap-about-story__media {
+		order: -1;
+	}
+}
+
+/* ==========================================================================
+   4. Mission / Vision / Values
+   ========================================================================== */
+
+.ap-about-mv__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--ap-s-6);
+}
+
+.ap-about-mv__card {
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-lg);
+	padding: var(--ap-s-8) var(--ap-s-6);
+	box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-about-mv__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 52px;
+	block-size: 52px;
+	border-radius: var(--ap-r-md);
+	background: var(--ap-accent-tint);
+	color: var(--ap-accent);
+	margin-block-end: var(--ap-s-4);
+}
+
+.ap-about-mv__card h3 {
+	font-size: var(--ap-text-lg);
+	margin: 0 0 var(--ap-s-2);
+}
+
+.ap-about-mv__card p {
+	margin: 0;
+	color: var(--ap-ink-soft);
+	line-height: var(--ap-lh-loose);
+	font-size: var(--ap-text-sm);
+}
+
+@media (max-width: 767px) {
+	.ap-about-mv__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ==========================================================================
+   5. Why choose us
+   ========================================================================== */
+
+.ap-about-why__grid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--ap-s-5);
+}
+
+.ap-about-why__item {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-1);
+	padding: var(--ap-s-6) var(--ap-s-5);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-lg);
+	background: var(--ap-surface);
+	box-shadow: var(--ap-shadow-xs);
+	transition: border-color var(--ap-dur) var(--ap-ease), box-shadow var(--ap-dur) var(--ap-ease), transform var(--ap-dur) var(--ap-ease);
+}
+
+.ap-about-why__item:hover {
+	border-color: transparent;
+	box-shadow: var(--ap-shadow-md);
+	transform: translateY(-2px);
+}
+
+.ap-about-why__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 48px;
+	block-size: 48px;
+	border-radius: var(--ap-r-md);
+	background: var(--ap-accent-tint);
+	color: var(--ap-accent);
+	margin-block-end: var(--ap-s-3);
+}
+
+/* A little colour variety across the grid — echoing the brand's brass and
+   green accents, which otherwise never appear outside ratings/stock states
+   — keeps six near-identical cards from reading as one grey wall. */
+.ap-about-why__item:nth-child(2) .ap-about-why__icon {
+	background: var(--ap-brass-tint);
+	color: var(--ap-brass);
+}
+
+.ap-about-why__item:nth-child(3) .ap-about-why__icon {
+	background: var(--ap-green-tint);
+	color: var(--ap-green);
+}
+
+.ap-about-why__item:nth-child(5) .ap-about-why__icon {
+	background: var(--ap-brass-tint);
+	color: var(--ap-brass-deep);
+}
+
+.ap-about-why__item:nth-child(6) .ap-about-why__icon {
+	background: var(--ap-green-tint);
+	color: var(--ap-green-deep);
+}
+
+.ap-about-why__item strong {
+	color: var(--ap-ink);
+	font-size: var(--ap-text-base);
+}
+
+.ap-about-why__item span:last-child {
+	color: var(--ap-ink-muted);
+	font-size: var(--ap-text-sm);
+	line-height: var(--ap-lh-normal);
+}
+
+@media (max-width: 900px) {
+	.ap-about-why__grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 575px) {
+	.ap-about-why__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ==========================================================================
+   6. Closing CTA
+   ========================================================================== */
+
+.ap-about-cta {
+	background: var(--ap-ink);
+	padding-block: var(--ap-s-16);
+}
+
+.ap-about-cta__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-8);
+	flex-wrap: wrap;
+}
+
+.ap-about-cta__text h2 {
+	color: #fff;
+	font-size: var(--ap-text-xl);
+	margin: 0 0 var(--ap-s-2);
+}
+
+.ap-about-cta__text p {
+	color: rgba(245, 247, 250, 0.72);
+	max-width: 34rem;
+	line-height: var(--ap-lh-normal);
+	margin: 0;
+}
+
+.ap-about-cta__actions {
+	display: flex;
+	gap: var(--ap-s-3);
+	flex-wrap: wrap;
+}
+
+.ap-about-cta .ap-btn--outline {
+	border-color: rgba(255, 255, 255, 0.3);
+	color: #fff;
+}
+
+.ap-about-cta .ap-btn--outline:hover {
+	border-color: #fff;
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+}

@@ -1,0 +1,862 @@
+/**
+ * Assurance Publications — base layer
+ * ===================================
+ * Primitives shared by every page: layout containers, the button system,
+ * section headers, badges, toasts and skeletons.
+ *
+ * Nothing here is page-specific. Anything that only one template needs
+ * lives in that template's own stylesheet.
+ */
+
+/* ==========================================================================
+   1. Layout
+   --------------------------------------------------------------------------
+   We deliberately reuse Blocksy's .ct-container rather than declaring our
+   own max-width. The client sets container width and gutters in the
+   Customizer; hardcoding a width here would silently ignore that and make
+   our sections misalign with the header and footer.
+   ========================================================================== */
+
+.ap-band {
+	padding-block: var(--ap-band);
+}
+
+.ap-band--sunk {
+	background: var(--ap-paper-sunk);
+}
+
+.ap-band--tight {
+	padding-block: calc(var(--ap-band) * 0.6);
+}
+
+/* Full-bleed background with contained content, without needing a wrapper
+   element around every section. */
+.ap-bleed {
+	width: 100vw;
+	margin-inline: calc(50% - 50vw);
+}
+
+.ap-stack>*+* {
+	margin-block-start: var(--ap-s-4);
+}
+
+/* ==========================================================================
+   2. Section header — the "title + action" pattern used by every
+      home row, the cart suggestions and the related-products block.
+   ========================================================================== */
+
+.ap-section-head {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: var(--ap-s-4);
+	margin-block-end: var(--ap-s-4);
+}
+
+.ap-section-head__text {
+	min-width: 0;
+}
+
+/* The eyebrow is the system's signature: a short rule, then a tracked
+   micro-label. It gives every section a consistent "entry point" without
+   another heading level competing with the title. */
+.ap-eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
+	letter-spacing: var(--ap-track-eyebrow);
+	color: var(--ap-accent);
+	margin-block-end: var(--ap-s-2);
+}
+
+.ap-eyebrow::before {
+	content: '';
+	inline-size: 18px;
+	block-size: 2px;
+	background: currentColor;
+	border-radius: var(--ap-r-pill);
+	flex: none;
+}
+
+.ap-section-title {
+	font-size: clamp(1.25rem, 2.4vw, var(--ap-text-xl));
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+	line-height: var(--ap-lh-snug);
+	margin: 0;
+}
+
+.ap-section-sub {
+	margin-block-start: var(--ap-s-1);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-muted);
+}
+
+@media (max-width: 575px) {
+	.ap-section-head {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: var(--ap-s-3);
+		margin-block-end: var(--ap-s-4);
+	}
+}
+
+/* ==========================================================================
+   2b. Icons
+   --------------------------------------------------------------------------
+   ========================================================================== */
+
+.ap-icon {
+	flex-shrink: 0;
+}
+
+/* ==========================================================================
+   3. Buttons
+   --------------------------------------------------------------------------
+   One class, explicit modifiers. Height is driven by --ap-control-h so
+   buttons, selects and quantity steppers line up on a shared baseline.
+   ========================================================================== */
+
+.ap-btn {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--ap-s-2);
+	min-block-size: var(--ap-control-h);
+	padding-inline: var(--ap-s-5);
+	border: 1px solid transparent;
+	border-radius: var(--ap-r-sm);
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-base);
+	font-weight: var(--ap-fw-semibold);
+	line-height: 1.2;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	transition:
+		background-color var(--ap-dur) var(--ap-ease),
+		border-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease),
+		box-shadow var(--ap-dur) var(--ap-ease),
+		transform var(--ap-dur-fast) var(--ap-ease);
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.ap-btn:active:not(:disabled) {
+	transform: translateY(1px);
+}
+
+.ap-btn:disabled,
+.ap-btn[aria-disabled='true'] {
+	opacity: 0.55;
+	cursor: not-allowed;
+	transform: none;
+}
+
+.ap-btn:focus-visible {
+	outline: none;
+	box-shadow: var(--ap-ring-focus);
+}
+
+/* Primary — vermillion. The only element on a card allowed this colour. */
+.ap-btn--primary {
+	background: var(--ap-accent);
+	color: #fff;
+	box-shadow: var(--ap-shadow-xs);
+}
+
+.ap-btn--primary:hover:not(:disabled) {
+	background: var(--ap-accent-deep);
+	color: #fff;
+	box-shadow: var(--ap-shadow-sm);
+}
+
+/* Ink — the secondary weight. Used where two actions sit side by side and
+   only one should be vermillion (Add to cart vs Buy now). */
+.ap-btn--ink {
+	background: var(--ap-ink);
+	color: var(--ap-ink-invert);
+}
+
+.ap-btn--ink:hover:not(:disabled) {
+	background: #0c1a13;
+	color: #fff;
+}
+
+.ap-btn--outline {
+	background: transparent;
+	border-color: var(--ap-line-strong);
+	color: var(--ap-ink);
+}
+
+.ap-btn--outline:hover:not(:disabled) {
+	border-color: var(--ap-ink);
+	background: var(--ap-surface);
+	color: var(--ap-ink);
+}
+
+.ap-btn--ghost {
+	background: transparent;
+	color: var(--ap-ink-soft);
+	padding-inline: var(--ap-s-3);
+}
+
+.ap-btn--ghost:hover:not(:disabled) {
+	background: var(--ap-paper-sunk);
+	color: var(--ap-ink);
+}
+
+/* Quiet link-button with a travelling arrow — the "সব বই দেখুন" affordance. */
+.ap-btn--link {
+	min-block-size: 0;
+	padding: 0;
+	background: none;
+	color: var(--ap-ink);
+	font-size: var(--ap-text-sm);
+	gap: var(--ap-s-1);
+}
+
+.ap-btn--link .ap-icon {
+	transition: transform var(--ap-dur) var(--ap-ease);
+}
+
+.ap-btn--link:hover {
+	color: var(--ap-accent);
+}
+
+.ap-btn--link:hover .ap-icon {
+	transform: translateX(3px);
+}
+
+.ap-btn--sm {
+	min-block-size: var(--ap-control-h-sm);
+	padding-inline: var(--ap-s-3);
+	font-size: var(--ap-text-sm);
+}
+
+.ap-btn--lg {
+	min-block-size: 50px;
+	padding-inline: var(--ap-s-8);
+	font-size: var(--ap-text-md);
+}
+
+.ap-btn--block {
+	inline-size: 100%;
+}
+
+/* Loading state. Label is hidden but kept in the accessibility tree so a
+   screen reader is not told the button lost its name mid-request. */
+.ap-btn.is-loading {
+	color: transparent !important;
+	pointer-events: none;
+}
+
+.ap-btn.is-loading::after {
+	content: '';
+	position: absolute;
+	inline-size: 16px;
+	block-size: 16px;
+	border: 2px solid currentColor;
+	border-block-start-color: transparent;
+	border-radius: 50%;
+	color: #fff;
+	animation: ap-spin 620ms linear infinite;
+}
+
+.ap-btn--outline.is-loading::after,
+.ap-btn--ghost.is-loading::after {
+	color: var(--ap-ink);
+}
+
+@keyframes ap-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Icon-only control. */
+.ap-icon-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 38px;
+	block-size: 38px;
+	padding: 0;
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	color: var(--ap-ink-soft);
+	cursor: pointer;
+	transition:
+		background-color var(--ap-dur) var(--ap-ease),
+		border-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-icon-btn:hover:not(:disabled) {
+	border-color: var(--ap-ink);
+	color: var(--ap-ink);
+}
+
+.ap-icon-btn:focus-visible {
+	outline: none;
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-icon-btn--bare {
+	border-color: transparent;
+	background: transparent;
+}
+
+.ap-icon-btn--bare:hover:not(:disabled) {
+	background: var(--ap-paper-sunk);
+	border-color: transparent;
+}
+
+/* ==========================================================================
+   4. Badges
+   ========================================================================== */
+
+.ap-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 3px var(--ap-s-2);
+	border-radius: var(--ap-r-xs);
+	font-size: var(--ap-text-2xs);
+	font-weight: var(--ap-fw-semibold);
+	line-height: 1.4;
+	letter-spacing: var(--ap-track-eyebrow);
+	white-space: nowrap;
+}
+
+.ap-badge--sale {
+	background: var(--ap-accent);
+	color: #fff;
+}
+
+.ap-badge--out {
+	background: var(--ap-ink-soft);
+	color: #fff;
+}
+
+.ap-badge--low {
+	background: var(--ap-amber-tint);
+	color: var(--ap-amber);
+}
+
+.ap-badge--backorder {
+	background: var(--ap-brass-tint);
+	color: var(--ap-brass-deep);
+}
+
+.ap-badge--new {
+	background: var(--ap-green-tint);
+	color: var(--ap-green-deep);
+}
+
+/* ==========================================================================
+   5. Rating
+   --------------------------------------------------------------------------
+   Two stacked star rows with the filled row clipped to a percentage. Keeps
+   partial stars crisp at any size, unlike a background-image approach.
+   ========================================================================== */
+
+.ap-rating {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ap-s-1);
+	line-height: 1;
+}
+
+.ap-rating__track,
+.ap-rating__fill {
+	display: inline-flex;
+	gap: 1px;
+	line-height: 1;
+}
+
+.ap-rating__track {
+	position: relative;
+	color: var(--ap-line-strong);
+}
+
+.ap-rating__fill {
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-start: 0;
+	overflow: hidden;
+	color: var(--ap-brass);
+	white-space: nowrap;
+}
+
+.ap-rating {
+	position: relative;
+}
+
+.ap-rating__count {
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+	margin-inline-start: 2px;
+}
+
+/* ==========================================================================
+   6. Price
+   ========================================================================== */
+
+.ap-price {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--ap-s-2);
+	flex-wrap: wrap;
+}
+
+.ap-price__now {
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-accent);
+	letter-spacing: var(--ap-track-tight);
+}
+
+.ap-price__was {
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-faint);
+	text-decoration: line-through;
+	text-decoration-thickness: 1px;
+}
+
+.ap-price__from {
+	font-size: var(--ap-text-xs);
+	color: var(--ap-ink-muted);
+	font-weight: var(--ap-fw-regular);
+}
+
+/* WooCommerce injects its own price markup in places we do not template
+   (widgets, blocks). Normalise it to the same look. */
+.ap-price del,
+.woocommerce-Price-amount del {
+	color: var(--ap-ink-faint);
+	text-decoration: line-through;
+}
+
+/* ==========================================================================
+   7. Toast
+   --------------------------------------------------------------------------
+   A polite live region: cart feedback must be announced, but must not
+   steal focus mid-browse. Sits above the drawer so an add-to-cart made
+   from inside the drawer is still visible.
+   ========================================================================== */
+
+.ap-toasts {
+	position: fixed;
+	z-index: var(--ap-z-toast);
+	inset-block-end: var(--ap-s-6);
+	inset-inline-start: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-2);
+	pointer-events: none;
+	inline-size: max-content;
+	max-inline-size: calc(100vw - var(--ap-s-8));
+}
+
+.ap-toast {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	padding: var(--ap-s-3) var(--ap-s-5);
+	border-radius: var(--ap-r-pill);
+	background: var(--ap-ink);
+	color: var(--ap-ink-invert);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	box-shadow: var(--ap-shadow-lg);
+	pointer-events: auto;
+	animation: ap-toast-in var(--ap-dur-slow) var(--ap-ease-out);
+}
+
+.ap-toast--error {
+	background: var(--ap-accent-deep);
+}
+
+.ap-toast--success .ap-icon {
+	color: #6fd39b;
+}
+
+.ap-toast.is-leaving {
+	animation: ap-toast-out var(--ap-dur) var(--ap-ease) forwards;
+}
+
+@keyframes ap-toast-in {
+	from {
+		opacity: 0;
+		transform: translateY(12px) scale(0.96);
+	}
+}
+
+@keyframes ap-toast-out {
+	to {
+		opacity: 0;
+		transform: translateY(8px) scale(0.98);
+	}
+}
+
+/* ==========================================================================
+   8. Skeleton — shown while AJAX grids and carousels refill.
+   ========================================================================== */
+
+.ap-skeleton {
+	position: relative;
+	overflow: hidden;
+	background: var(--ap-paper-sunk);
+	border-radius: var(--ap-r-sm);
+}
+
+.ap-skeleton::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	transform: translateX(-100%);
+	background: linear-gradient(90deg,
+			transparent,
+			rgba(255, 255, 255, 0.65),
+			transparent);
+	animation: ap-shimmer 1.3s infinite;
+}
+
+@keyframes ap-shimmer {
+	to {
+		transform: translateX(100%);
+	}
+}
+
+/* Region being replaced by AJAX: dim rather than blank, so the page does
+   not collapse and rebound in height. */
+.ap-is-busy {
+	position: relative;
+	opacity: 0.5;
+	pointer-events: none;
+	transition: opacity var(--ap-dur) var(--ap-ease);
+}
+
+/* ==========================================================================
+   9. Empty state
+   ========================================================================== */
+
+.ap-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: var(--ap-s-3);
+	padding: var(--ap-s-16) var(--ap-s-4);
+	color: var(--ap-ink-muted);
+}
+
+.ap-empty__icon {
+	display: grid;
+	place-items: center;
+	inline-size: 56px;
+	block-size: 56px;
+	border-radius: 50%;
+	background: var(--ap-paper-sunk);
+	color: var(--ap-ink-faint);
+}
+
+.ap-empty__title {
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+	margin: 0;
+}
+
+.ap-empty__text {
+	font-size: var(--ap-text-sm);
+	max-inline-size: 38ch;
+	margin: 0;
+}
+
+/* ==========================================================================
+   10. Scroll affordances — shared by the carousels
+   ========================================================================== */
+
+.ap-scroller {
+	display: flex;
+	gap: var(--ap-s-4);
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+	scrollbar-color: var(--ap-line-strong) transparent;
+	-webkit-overflow-scrolling: touch;
+	/* Bleed the gutter so the first and last card can sit flush with the
+	   container edge while still scrolling past it. */
+	padding-block-end: var(--ap-s-2);
+}
+
+.ap-scroller>* {
+	scroll-snap-align: start;
+	flex: 0 0 auto;
+}
+
+.ap-scroller::-webkit-scrollbar {
+	block-size: 6px;
+}
+
+.ap-scroller::-webkit-scrollbar-thumb {
+	background: var(--ap-line-strong);
+	border-radius: var(--ap-r-pill);
+}
+
+.ap-scroller::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.ap-scroller-nav {
+	display: inline-flex;
+	gap: var(--ap-s-2);
+}
+
+.ap-scroller-nav button[disabled] {
+	opacity: 0.35;
+	cursor: default;
+}
+
+@media (max-width: 767px) {
+
+	/* Arrow buttons are pointless on touch; the scroller is swipeable. */
+	.ap-scroller-nav {
+		display: none;
+	}
+}
+
+/* ==========================================================================
+   11. Utilities
+   ========================================================================== */
+
+.ap-hidden {
+	display: none !important;
+}
+
+.ap-truncate-2 {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.ap-truncate-1 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Keyboard users get the skip target; pointer users never see it. */
+.ap-skip-link:focus {
+	position: fixed;
+	inset-block-start: var(--ap-s-3);
+	inset-inline-start: var(--ap-s-3);
+	z-index: var(--ap-z-toast);
+	padding: var(--ap-s-3) var(--ap-s-5);
+	background: var(--ap-ink);
+	color: #fff;
+	border-radius: var(--ap-r-sm);
+	clip: auto;
+	inline-size: auto;
+	block-size: auto;
+}
+
+/* ==========================================================================
+   WooCommerce — order details, invoice block, account orders
+   --------------------------------------------------------------------------
+   These render on My Account, which loads no page-specific stylesheet, so
+   they live here rather than in cart-checkout.css.
+   ========================================================================== */
+
+.woocommerce-order-details,
+.woocommerce-customer-details {
+	margin-block-start: var(--ap-s-10);
+}
+
+.woocommerce-order-details__title,
+.woocommerce-column__title,
+.woocommerce-customer-details h2 {
+	margin-block-end: var(--ap-s-4);
+	font-size: var(--ap-text-lg);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+/* WooCommerce wraps each address line in its own <p>, which stacks a full
+   paragraph margin between the phone and the email. */
+.woocommerce-customer-details address {
+	padding: var(--ap-s-4);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	background: var(--ap-surface);
+	font-style: normal;
+	line-height: var(--ap-lh-normal);
+	color: var(--ap-ink-soft);
+}
+
+.woocommerce-customer-details address p,
+.woocommerce-customer-details--phone,
+.woocommerce-customer-details--email {
+	margin: 0;
+	padding: 0;
+}
+
+.woocommerce-customer-details--phone,
+.woocommerce-customer-details--email {
+	display: block;
+	margin-block-start: var(--ap-s-1);
+}
+
+/* ==========================================================================
+   Invoice block (rendered by inc/emails.php)
+   ========================================================================== */
+
+.ap-invoice {
+	margin-block-start: var(--ap-s-6);
+	padding: var(--ap-s-4) var(--ap-s-5);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	background: var(--ap-surface);
+}
+
+.ap-invoice__title {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	margin: 0;
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-invoice__title .ap-icon {
+	color: var(--ap-accent);
+}
+
+.ap-invoice__hint {
+	margin: var(--ap-s-1) 0 var(--ap-s-3);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-muted);
+}
+
+.ap-invoice__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ap-s-2);
+}
+
+/* ==========================================================================
+   PDF invoice buttons (WebToffee)
+   --------------------------------------------------------------------------
+   The plugin ships them unstyled; pulled onto the theme's button language
+   here rather than in the plugin, which an update would overwrite.
+   ========================================================================== */
+
+a[class*='wt_pklist_'][class*='_print'],
+a[class*='wt_pklist_'][class*='_download'] {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--ap-s-2);
+	min-block-size: var(--ap-control-h-sm);
+	padding-inline: var(--ap-s-4);
+	border: 1px solid var(--ap-line-strong);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	line-height: 1.2;
+	color: var(--ap-ink);
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+a[class*='wt_pklist_'][class*='_print']:hover,
+a[class*='wt_pklist_'][class*='_download']:hover {
+	border-color: var(--ap-accent);
+	background: var(--ap-accent-tint);
+	color: var(--ap-accent-deep);
+}
+
+/* Download is the primary action inside our own invoice block. */
+.ap-invoice__actions a[class*='_download'] {
+	border-color: transparent;
+	background: var(--ap-accent);
+	color: #fff;
+}
+
+.ap-invoice__actions a[class*='_download']:hover {
+	border-color: transparent;
+	background: var(--ap-accent-deep);
+	color: #fff;
+}
+
+/* ==========================================================================
+   My Account — orders table
+   ========================================================================== */
+
+.woocommerce-orders-table td,
+.woocommerce-orders-table th {
+	vertical-align: middle;
+}
+
+.woocommerce-orders-table__cell-order-number a {
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+	text-decoration: none;
+}
+
+.woocommerce-orders-table__cell-order-number a:hover {
+	color: var(--ap-accent);
+}
+
+/* Actions sit on one compact row instead of one full-width button per line. */
+.woocommerce-orders-table__cell-order-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ap-s-2);
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.woocommerce-orders-table__cell-order-actions .button,
+.woocommerce-orders-table__cell-order-actions a[class*='wt_pklist_'] {
+	inline-size: auto;
+	min-inline-size: 0;
+	min-block-size: var(--ap-control-h-sm);
+	padding-inline: var(--ap-s-4);
+	margin: 0;
+	border-radius: var(--ap-r-sm);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+	.woocommerce-orders-table__cell-order-actions {
+		justify-content: flex-start;
+	}
+
+	.woocommerce-orders-table__cell-order-actions .button,
+	.woocommerce-orders-table__cell-order-actions a[class*='wt_pklist_'] {
+		flex: 1 1 auto;
+	}
+}

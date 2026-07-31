@@ -1,0 +1,26 @@
+/*
+Theme Name:   Assurance Publications
+Theme URI:    https://assurancepublications.com
+Description:  Child theme of Blocksy for Assurance Publications — a Bangla
+              competitive-exam book store. Adds a custom WooCommerce product
+              card, off-canvas cart, filtered shop archive, and a trimmed
+              Bangladesh-specific checkout, on a self-hosted Anek Bangla
+              type system.
+Author:       Showmik Hassan
+Author URI:   https://showmik.com
+Template:     blocksy
+Version:      1.0.0
+Requires PHP: 7.4
+Text Domain:  assurance
+License:      GNU General Public License v2 or later
+License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+*/
+
+/*
+ * Intentionally empty.
+ *
+ * WordPress loads this file only for the theme header above. All styling
+ * lives in assets/css/*.css and is enqueued conditionally from
+ * inc/setup.php, so a page never downloads CSS for a template it is not
+ * rendering (the cart page does not ship shop-filter styles, and so on).
+ */

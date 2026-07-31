@@ -1,0 +1,77 @@
+/**
+ * Home page.
+ *
+ * The sections themselves are blocks (see the Assurance Blocks plugin);
+ * this file only handles page-level rhythm and the few things a block
+ * cannot know about — how its band relates to the ones around it.
+ */
+
+/* Blocksy's container wraps block content; the hero should sit tight
+   under the header rather than inheriting the default page top padding. */
+/* .home .ct-container>.wp-block-group:first-child,
+.home .entry-content>.apb-hero:first-child {
+	margin-block-start: var(--ap-s-12);
+} */
+
+/* Alternating bands. Rather than asking the editor to remember to tick
+   "tinted background" on every other row, give consecutive untinted rows
+   a hairline separator so the page still has structure if they don't. */
+/* .home .apb-row+.apb-row:not(.ap-band--sunk) {
+	border-block-start: 1px solid var(--ap-line-soft);
+} */
+
+/* A tinted band should bleed the full viewport width even inside a
+   constrained container, or it reads as a floating grey box. */
+.ap-band--sunk {
+	position: relative;
+}
+
+.ap-band--sunk::before {
+	content: '';
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: 50%;
+	z-index: -1;
+	inline-size: 100vw;
+	transform: translateX(-50%);
+	background: var(--ap-paper-sunk);
+}
+
+/* Section spacing: the first band after the hero needs less air, because
+   the hero already ends on a strong horizontal edge. */
+.home .apb-hero+.ap-band {
+	padding-block-start: var(--ap-s-5);
+}
+
+/* The trust row closes the page, so it gets extra breathing room above
+   and sits flush with the footer below. */
+.home .apb-trust {
+	padding-block-end: var(--ap-band);
+}
+
+@media (max-width: 767px) {
+	.home .apb-hero+.ap-band {
+		padding-block-start: var(--ap-s-6);
+	}
+}
+
+/* ==========================================================================
+   Reveal on scroll
+   --------------------------------------------------------------------------
+   The .ap-reveal class is added by home.js, never present in the served
+   HTML. That way a visitor without JS gets fully-visible content instead of
+   sections permanently stuck at opacity 0.
+   ========================================================================== */
+
+.ap-reveal {
+	opacity: 0;
+	transform: translateY(14px);
+	transition:
+		opacity 520ms var(--ap-ease-out),
+		transform 520ms var(--ap-ease-out);
+}
+
+.ap-reveal.is-revealed {
+	opacity: 1;
+	transform: none;
+}

@@ -1,0 +1,707 @@
+/**
+ * Product card
+ * ============
+ * The single most-repeated element on the site, so it carries most of the
+ * design's identity.
+ *
+ * Three decisions do the heavy lifting:
+ *
+ *   1. The cover sits on a recessed warm panel rather than flush white, so
+ *      the wildly-varying cover artwork is framed instead of bleeding into
+ *      the card.
+ *   2. A rendered spine along the cover's inner edge makes each item read
+ *      as a physical book. This is the detail that separates a bookshop
+ *      from a generic product grid, and it costs one pseudo-element.
+ *   3. The sale badge is a notched seal, echoing the printed approval seal
+ *      on the publisher's own covers, rather than the default red circle.
+ */
+
+/* ==========================================================================
+   1. Grid
+   ========================================================================== */
+
+.ap-grid {
+	display: grid;
+	grid-template-columns: repeat(var(--ap-cols, 4), minmax(0, 1fr));
+	gap: var(--ap-s-5);
+}
+
+@media (max-width: 1199px) {
+	.ap-grid {
+		grid-template-columns: repeat(min(var(--ap-cols, 4), 3), minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 991px) {
+	.ap-grid {
+		grid-template-columns: repeat(min(var(--ap-cols, 4), 3), minmax(0, 1fr));
+		gap: var(--ap-s-4);
+	}
+}
+
+@media (max-width: 767px) {
+	.ap-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--ap-s-3);
+	}
+}
+
+/* WooCommerce's own <ul class="products"> — reuse the same grid so the
+   archive matches blocks rendered through assurance_product_grid(). */
+.woocommerce ul.products {
+	display: grid;
+	grid-template-columns: repeat(var(--ap-cols, 4), minmax(0, 1fr));
+	gap: var(--ap-s-5);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* The shop archive specifically wants 3 per row; everywhere else that
+   reuses this same WooCommerce grid — related products, upsells, the
+   cart's cross-sell block — keeps the default 4. */
+.ap-shop__grid ul.products {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.woocommerce ul.products::before,
+.woocommerce ul.products::after {
+	display: none;
+}
+
+.woocommerce ul.products li.product {
+	inline-size: auto;
+	margin: 0;
+	padding: 0;
+	float: none;
+	clear: none;
+}
+
+@media (max-width: 991px) {
+	.woocommerce ul.products {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--ap-s-4);
+	}
+}
+
+@media (max-width: 767px) {
+	.woocommerce ul.products {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--ap-s-3);
+	}
+}
+
+/* ==========================================================================
+   2. Card shell
+   ========================================================================== */
+
+.ap-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	block-size: 100%;
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	overflow: hidden;
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		box-shadow var(--ap-dur) var(--ap-ease),
+		transform var(--ap-dur) var(--ap-ease);
+}
+
+.ap-card:hover {
+	border-color: var(--ap-line);
+	box-shadow: var(--ap-shadow-md);
+	transform: translateY(-2px);
+}
+
+/* Whole-card focus ring when the title link inside is keyboard-focused —
+   the visible affordance should be the card, not a 2px box round the text. */
+.ap-card:focus-within {
+	border-color: var(--ap-accent);
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-card:focus-within .ap-card__link:focus-visible {
+	outline: none;
+}
+
+.ap-card-item {
+	display: flex;
+}
+
+/* ==========================================================================
+   3. Media — recessed panel + book spine
+   ========================================================================== */
+
+.ap-card__media {
+	position: relative;
+	display: grid;
+	place-items: center;
+	padding: var(--ap-s-5) var(--ap-s-4);
+	/* Cool recessed ground. The faint vertical gradient reads as a shelf
+	   surface catching light from above. */
+	background: var(--ap-gradient-silver);
+	border-block-end: 1px solid var(--ap-line-soft);
+	overflow: hidden;
+}
+
+.ap-cover {
+	position: relative;
+	display: block;
+	inline-size: 100%;
+	max-inline-size: 165px;
+	aspect-ratio: var(--ap-cover-ratio);
+	border-radius: 2px 4px 4px 2px;
+	box-shadow: var(--ap-shadow-cover);
+	transition:
+		transform var(--ap-dur-slow) var(--ap-ease-out),
+		box-shadow var(--ap-dur-slow) var(--ap-ease-out);
+	/* Establishes the stacking context for the spine overlay. */
+	isolation: isolate;
+}
+
+.ap-cover__img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+	border-radius: inherit;
+	display: block;
+}
+
+/* The spine. A dark gradient hugging the binding edge plus a single bright
+   highlight where the cover board turns — the two together are what make
+   the eye read thickness rather than a drop shadow. */
+.ap-cover::before {
+	content: '';
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: 0;
+	inline-size: 9px;
+	border-start-start-radius: inherit;
+	border-end-start-radius: inherit;
+	background: linear-gradient(90deg,
+			rgba(15, 31, 61, 0.34) 0%,
+			rgba(15, 31, 61, 0.16) 38%,
+			rgba(15, 31, 61, 0.04) 62%,
+			rgba(255, 255, 255, 0.30) 88%,
+			rgba(255, 255, 255, 0) 100%);
+	z-index: 2;
+	pointer-events: none;
+}
+
+/* Sheen across the cover face, so the artwork reads as a printed, slightly
+   glossy board rather than a flat image. Kept very low contrast. */
+.ap-cover::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: linear-gradient(104deg,
+			rgba(255, 255, 255, 0) 42%,
+			rgba(255, 255, 255, 0.16) 50%,
+			rgba(255, 255, 255, 0) 58%);
+	opacity: 0;
+	transition: opacity var(--ap-dur-slow) var(--ap-ease);
+	z-index: 3;
+	pointer-events: none;
+}
+
+.ap-card:hover .ap-cover {
+	transform: translateY(-4px) rotate(-0.6deg);
+	box-shadow:
+		0 2px 2px rgba(15, 31, 61, 0.10),
+		0 8px 18px rgba(15, 31, 61, 0.12),
+		0 20px 38px rgba(15, 31, 61, 0.10);
+}
+
+.ap-card:hover .ap-cover::after {
+	opacity: 1;
+}
+
+/* ==========================================================================
+   4. Sale seal
+   --------------------------------------------------------------------------
+   A notched stamp rather than a circle or a pill. The notch is cut with a
+   clip-path so it needs no extra element and scales cleanly.
+   ========================================================================== */
+
+.ap-seal {
+	position: absolute;
+	inset-block-start: var(--ap-s-3);
+	inset-inline-start: var(--ap-s-3);
+	z-index: 4;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0;
+	inline-size: 42px;
+	block-size: 42px;
+	background: var(--ap-accent);
+	color: #fff;
+	border-radius: var(--ap-r-xs);
+	box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
+	/* Ticket notch on the lower edge. */
+	clip-path: polygon(0 0, 100% 0, 100% 100%,
+			72% 100%, 66% 88%, 34% 88%, 28% 100%, 0 100%);
+	line-height: 1;
+}
+
+.ap-seal__num {
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-bold);
+	letter-spacing: -0.02em;
+}
+
+.ap-seal__label {
+	font-size: 8px;
+	font-weight: var(--ap-fw-medium);
+	letter-spacing: 0.08em;
+	opacity: 0.9;
+	margin-block-start: 1px;
+}
+
+/* ==========================================================================
+   5. Out-of-stock veil
+   ========================================================================== */
+
+.ap-card__veil {
+	position: absolute;
+	inset: 0;
+	z-index: 4;
+	display: grid;
+	place-items: center;
+	background: rgba(250, 247, 241, 0.72);
+	backdrop-filter: saturate(0.4) blur(1px);
+	-webkit-backdrop-filter: saturate(0.4) blur(1px);
+}
+
+.ap-card.is-out-of-stock .ap-cover {
+	filter: grayscale(0.55);
+}
+
+.ap-card.is-out-of-stock:hover .ap-cover {
+	transform: none;
+}
+
+/* ==========================================================================
+   7. Body
+   ========================================================================== */
+
+.ap-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-2);
+	padding: var(--ap-s-4);
+	flex: 1;
+}
+
+.ap-card__cat {
+	font-size: var(--ap-text-2xs);
+	font-weight: var(--ap-fw-semibold);
+	letter-spacing: var(--ap-track-eyebrow);
+	color: var(--ap-ink-faint);
+	text-decoration: none;
+	transition: color var(--ap-dur) var(--ap-ease);
+	/* One line only — several categories here are long enough to wrap to
+	   three lines and shove the price below the fold of the card. */
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.ap-card__cat:hover {
+	color: var(--ap-accent);
+}
+
+.ap-card__title {
+	margin: 0;
+	font-size: var(--ap-text-base);
+	font-weight: var(--ap-fw-semibold);
+	line-height: var(--ap-lh-snug);
+	/* Reserve two lines so cards in a row keep their price rows aligned
+	   regardless of title length. */
+	min-block-size: calc(var(--ap-text-base) * var(--ap-lh-snug) * 2);
+}
+
+.ap-card__link {
+	color: var(--ap-ink);
+	text-decoration: none;
+	transition: color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-card__link:hover {
+	color: var(--ap-accent);
+}
+
+/* Expand the title link's hit area to the whole card, while keeping the
+   real buttons above it. Gives a large tap target without wrapping the
+   card in an anchor (which would nest interactive elements). */
+.ap-card__link::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}
+
+.ap-card__media,
+.ap-card__actions,
+.ap-card__cat {
+	position: relative;
+	z-index: 2;
+}
+
+.ap-card__rating {
+	min-block-size: 16px;
+	display: flex;
+	align-items: center;
+}
+
+.ap-card__norating {
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+}
+
+.ap-card__stock {
+	align-self: flex-start;
+}
+
+/* ==========================================================================
+   8. Footer — price and actions
+   ========================================================================== */
+
+.ap-card__foot {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: var(--ap-s-2);
+	margin-block-start: auto;
+	padding-block-start: var(--ap-s-3);
+}
+
+.ap-card__actions {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	flex: none;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+
+.ap-card__buy {
+	white-space: nowrap;
+	padding-inline: var(--ap-s-3);
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* The bag. Orange by default — the cart action is the one thing on the
+   card allowed the accent colour, everywhere else it is reserved for CTA
+   text and price. Darkens on hover rather than changing hue. */
+.ap-card__bag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: var(--ap-control-h-sm);
+	block-size: var(--ap-control-h-sm);
+	flex: none;
+	padding: 0;
+	border: 0;
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-accent);
+	color: #fff;
+	cursor: pointer;
+	transition:
+		background-color var(--ap-dur) var(--ap-ease),
+		transform var(--ap-dur-fast) var(--ap-ease);
+}
+
+.ap-card__bag:hover {
+	background: var(--ap-accent-deep);
+	color: #fff;
+}
+
+.ap-card__bag:active {
+	transform: scale(0.94);
+}
+
+.ap-card__bag:focus-visible {
+	outline: none;
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-card__bag.is-loading {
+	pointer-events: none;
+	position: relative;
+	color: transparent;
+}
+
+.ap-card__bag.is-loading::after {
+	content: '';
+	position: absolute;
+	inline-size: 15px;
+	block-size: 15px;
+	border: 2px solid rgba(255, 255, 255, 0.9);
+	border-block-start-color: transparent;
+	border-radius: 50%;
+	animation: ap-spin 620ms linear infinite;
+}
+
+/* Success pulse after a successful add — brief, then reverts. */
+.ap-card__bag.is-done {
+	background: var(--ap-green);
+	color: #fff;
+	animation: ap-pop var(--ap-dur-slow) var(--ap-ease-spring);
+}
+
+@keyframes ap-pop {
+	0% {
+		transform: scale(1);
+	}
+
+	45% {
+		transform: scale(1.16);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+
+/* ==========================================================================
+   9. Compact variant — drawer and dense carousels
+   ========================================================================== */
+
+.ap-card--compact {
+	flex-direction: row;
+	align-items: stretch;
+	border-radius: var(--ap-r-sm);
+}
+
+.ap-card--compact .ap-card__media {
+	inline-size: 90px;
+	align-self: center;
+	flex: none;
+	padding: var(--ap-s-3);
+	border-block-end: 0;
+	border-inline-end: 1px solid var(--ap-line-soft);
+}
+
+.ap-card--compact .ap-cover {
+	max-inline-size: none;
+}
+
+/* The 42px default seal is sized for the ~165px cover; the compact
+   thumbnail is only 78px wide, so the badge needs to shrink with it. */
+.ap-card--compact .ap-seal {
+	inset-block-start: var(--ap-s-1);
+	inset-inline-start: var(--ap-s-1);
+	inline-size: 26px;
+	block-size: 26px;
+}
+
+.ap-card--compact .ap-seal__num {
+	font-size: 9px;
+}
+
+.ap-card--compact .ap-seal__label {
+	font-size: 6px;
+	margin-block-start: 0;
+}
+
+.ap-card--compact .ap-cover::before {
+	inline-size: 5px;
+}
+
+.ap-card--compact .ap-card__body {
+	padding: var(--ap-s-3);
+	gap: var(--ap-s-1);
+}
+
+.ap-card--compact .ap-card__title {
+	font-size: var(--ap-text-sm);
+	min-block-size: 0;
+}
+
+.ap-card--compact .ap-card__foot {
+	padding-block-start: var(--ap-s-2);
+}
+
+.ap-card--compact .ap-price__now {
+	font-size: var(--ap-text-base);
+}
+
+.ap-card--compact:hover {
+	transform: none;
+	box-shadow: none;
+}
+
+.ap-card--compact:hover .ap-cover {
+	transform: none;
+}
+
+/* ==========================================================================
+   10. Small screens
+   ========================================================================== */
+
+@media (max-width: 575px) {
+	.ap-card__media {
+		padding: var(--ap-s-3) var(--ap-s-2);
+	}
+
+	.ap-cover {
+		max-inline-size: 120px;
+	}
+
+	.ap-card__body {
+		padding: var(--ap-s-3);
+		gap: var(--ap-s-1);
+	}
+
+	.ap-card__title {
+		font-size: var(--ap-text-sm);
+		min-block-size: calc(var(--ap-text-sm) * var(--ap-lh-snug) * 2);
+	}
+
+	.ap-price__now {
+		font-size: var(--ap-text-base);
+	}
+
+	/* Buy Now does not fit beside the bag at two columns; the bag is the
+	   higher-value action on mobile, so Buy Now steps down to the row below
+	   rather than being dropped entirely. */
+	.ap-card__foot {
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--ap-s-2);
+	}
+
+	.ap-card__actions {
+		justify-content: space-between;
+	}
+
+	.ap-card__buy {
+		flex: 1;
+		justify-content: center;
+	}
+
+	.ap-card__buy .ap-icon {
+		display: none;
+	}
+
+	.ap-seal {
+		inline-size: 36px;
+		block-size: 36px;
+	}
+
+	.ap-seal__num {
+		font-size: var(--ap-text-xs);
+	}
+}
+
+/* ==========================================================================
+   11. Variation popover
+   --------------------------------------------------------------------------
+   Opened by the bag icon on a variable product, so the shopper can pick a
+   variation without losing their place in the grid.
+   ========================================================================== */
+
+.ap-varpop {
+	position: absolute;
+	z-index: var(--ap-z-popover);
+	inline-size: min(260px, calc(100vw - 2rem));
+	padding: var(--ap-s-4);
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-md);
+	box-shadow: var(--ap-shadow-lg);
+	animation: ap-pop-in var(--ap-dur) var(--ap-ease-out);
+}
+
+@keyframes ap-pop-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px) scale(0.98);
+	}
+}
+
+.ap-varpop__title {
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+	margin: 0 0 var(--ap-s-3);
+}
+
+.ap-varpop__row {
+	margin-block-end: var(--ap-s-3);
+}
+
+.ap-varpop__label {
+	display: block;
+	font-size: var(--ap-text-2xs);
+	font-weight: var(--ap-fw-semibold);
+	letter-spacing: var(--ap-track-eyebrow);
+	color: var(--ap-ink-muted);
+	margin-block-end: var(--ap-s-2);
+}
+
+.ap-varpop__opts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ap-s-2);
+}
+
+.ap-varpop__opt {
+	padding: 5px var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-soft);
+	cursor: pointer;
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-varpop__opt:hover:not(:disabled) {
+	border-color: var(--ap-ink);
+	color: var(--ap-ink);
+}
+
+.ap-varpop__opt[aria-pressed='true'] {
+	border-color: var(--ap-ink);
+	background: var(--ap-ink);
+	color: #fff;
+}
+
+.ap-varpop__opt:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+	text-decoration: line-through;
+}
+
+.ap-varpop__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-3);
+	padding-block-start: var(--ap-s-3);
+	border-block-start: 1px solid var(--ap-line-soft);
+}
+
+.ap-varpop__price {
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-accent);
+}
+
+.ap-varpop__close {
+	position: absolute;
+	inset-block-start: var(--ap-s-2);
+	inset-inline-end: var(--ap-s-2);
+}

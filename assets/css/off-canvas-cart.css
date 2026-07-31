@@ -1,0 +1,532 @@
+/**
+ * Off-canvas cart + quantity switcher
+ * ===================================
+ * The drawer is a three-row grid: fixed header, scrolling body, sticky
+ * footer. Using grid rather than absolute positioning means the footer
+ * cannot overlap the last line item on short viewports, and the body's
+ * scroll container is the only thing that scrolls — so momentum scrolling
+ * on iOS stays inside the drawer instead of chaining to the page.
+ */
+
+/* Blocksy's own hover mini-cart preview on the header icon — we ship our
+   own drawer below, so its dropdown would just be a second, conflicting
+   cart UI stacked on top of ours. */
+.ct-header-cart .ct-cart-content {
+	display: none !important;
+}
+
+/* ==========================================================================
+   1. Shell
+   ========================================================================== */
+
+.ap-drawer-root {
+	position: fixed;
+	inset: 0;
+	z-index: var(--ap-z-drawer);
+}
+
+.ap-drawer-root[hidden] {
+	display: none;
+}
+
+/* wp-admin-bar sits at z-index 99999, above the drawer, so it would
+   otherwise cover the drawer header for logged-in users. */
+body.admin-bar .ap-drawer-root {
+	inset-block-start: 32px;
+}
+
+@media (max-width: 782px) {
+	body.admin-bar .ap-drawer-root {
+		inset-block-start: 46px;
+	}
+}
+
+.ap-drawer__scrim {
+	position: absolute;
+	inset: 0;
+	background: rgba(15, 31, 61, 0.42);
+	opacity: 0;
+	transition: opacity var(--ap-dur-panel) var(--ap-ease-out);
+	-webkit-backdrop-filter: blur(2px);
+	backdrop-filter: blur(2px);
+}
+
+.ap-drawer {
+	position: absolute;
+	inset-block: 0;
+	inset-inline-end: 0;
+	inline-size: min(var(--ap-drawer-w), 100vw);
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	background: var(--ap-paper);
+	box-shadow: var(--ap-shadow-panel);
+	transform: translateX(100%);
+	transition: transform var(--ap-dur-panel) var(--ap-ease-out);
+	will-change: transform;
+}
+
+[dir='rtl'] .ap-drawer {
+	transform: translateX(-100%);
+}
+
+.ap-drawer-root.is-open .ap-drawer__scrim {
+	opacity: 1;
+}
+
+.ap-drawer-root.is-open .ap-drawer {
+	transform: none;
+}
+
+/* ==========================================================================
+   2. Header
+   ========================================================================== */
+
+.ap-drawer__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-3);
+	padding: var(--ap-s-4) var(--ap-s-5);
+	background: var(--ap-surface);
+	border-block-end: 1px solid var(--ap-line);
+}
+
+.ap-drawer__title {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	margin: 0;
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-drawer__count {
+	display: inline-grid;
+	place-items: center;
+	min-inline-size: 22px;
+	block-size: 22px;
+	padding-inline: 6px;
+	border-radius: var(--ap-r-pill);
+	background: var(--ap-accent);
+	color: #fff;
+	font-size: var(--ap-text-2xs);
+	font-weight: var(--ap-fw-bold);
+	line-height: 1;
+}
+
+/* ==========================================================================
+   3. Body
+   ========================================================================== */
+
+.ap-drawer__body {
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
+}
+
+.ap-drawer__empty {
+	display: grid;
+	place-items: center;
+	block-size: 100%;
+}
+
+/* ==========================================================================
+   4. Free-shipping progress
+   --------------------------------------------------------------------------
+   Sits directly under the header, on the sunk ground, so it reads as a
+   status band rather than a cart line.
+   ========================================================================== */
+
+.ap-freeship {
+	padding: var(--ap-s-5) var(--ap-s-5);
+	background: var(--ap-brass-tint);
+	border-block-end: 1px solid var(--ap-line-soft);
+}
+
+.ap-freeship.is-met {
+	background: var(--ap-green-tint);
+}
+
+.ap-freeship__text {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	margin: 0 0 var(--ap-s-4);
+	font-size: var(--ap-text-xs);
+	color: var(--ap-ink-soft);
+}
+
+.ap-freeship.is-met .ap-freeship__text {
+	color: var(--ap-green-deep);
+}
+
+.ap-freeship__text strong {
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+}
+
+.ap-freeship.is-met .ap-freeship__text strong {
+	color: var(--ap-green-deep);
+}
+
+.ap-freeship__track {
+	position: relative;
+	block-size: 6px;
+	border-radius: var(--ap-r-pill);
+	background: rgba(15, 31, 61, 0.10);
+	overflow: visible;
+}
+
+.ap-freeship__fill {
+	position: relative;
+	display: block;
+	block-size: 100%;
+	border-radius: inherit;
+	background: linear-gradient(90deg, var(--ap-brass), #e1a311);
+	transition: width var(--ap-dur-slow) var(--ap-ease-out);
+}
+
+.ap-freeship.is-met .ap-freeship__fill {
+	background: linear-gradient(90deg, var(--ap-green), #2ba465);
+}
+
+/* A round truck badge riding the leading edge of the fill — the progress
+   bar reads as "the delivery getting closer" rather than a bare gauge. */
+.ap-freeship__truck {
+	position: absolute;
+	inset-inline-end: -11px;
+	inset-block-start: 50%;
+	transform: translateY(-50%);
+	display: grid;
+	place-items: center;
+	inline-size: 22px;
+	block-size: 22px;
+	border-radius: 50%;
+	background: var(--ap-brass);
+	color: #fff;
+	box-shadow: 0 1px 3px rgba(15, 31, 61, 0.35), 0 0 0 3px var(--ap-surface);
+	transition: background-color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-freeship.is-met .ap-freeship__truck {
+	background: var(--ap-green);
+}
+
+/* ==========================================================================
+   5. Line items
+   ========================================================================== */
+
+.ap-drawer__items {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ap-line {
+	position: relative;
+	display: grid;
+	grid-template-columns: 56px 1fr auto;
+	gap: var(--ap-s-3);
+	align-items: start;
+	padding: var(--ap-s-4) var(--ap-s-5);
+	background: var(--ap-surface);
+	border-block-end: 1px solid var(--ap-line-soft);
+	transition: opacity var(--ap-dur) var(--ap-ease);
+}
+
+.ap-line.is-busy {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.ap-line.is-leaving {
+	animation: ap-line-out var(--ap-dur-slow) var(--ap-ease) forwards;
+}
+
+@keyframes ap-line-out {
+	to {
+		opacity: 0;
+		transform: translateX(24px);
+		max-block-size: 0;
+		padding-block: 0;
+		border-width: 0;
+	}
+}
+
+.ap-line__media {
+	inline-size: 56px;
+	aspect-ratio: var(--ap-cover-ratio);
+	border-radius: 2px;
+	overflow: hidden;
+	background: var(--ap-paper-sunk);
+	box-shadow: var(--ap-shadow-xs);
+}
+
+.ap-line__img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.ap-line__body {
+	min-inline-size: 0;
+}
+
+.ap-line__title {
+	margin: 0 0 var(--ap-s-1);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	line-height: var(--ap-lh-snug);
+}
+
+.ap-line__title a {
+	color: var(--ap-ink);
+	text-decoration: none;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.ap-line__title a:hover {
+	color: var(--ap-accent);
+}
+
+.ap-line__meta {
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+	margin-block-end: var(--ap-s-2);
+}
+
+.ap-line__meta p {
+	margin: 0;
+}
+
+.ap-line__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-2);
+	margin-block-start: var(--ap-s-2);
+}
+
+.ap-line__price {
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+	white-space: nowrap;
+}
+
+.ap-line__remove {
+	inline-size: 28px;
+	block-size: 28px;
+	color: var(--ap-ink-faint);
+}
+
+.ap-line__remove:hover {
+	color: var(--ap-accent);
+	background: var(--ap-accent-tint);
+}
+
+/* ==========================================================================
+   6. Suggestions strip
+   ========================================================================== */
+
+.ap-drawer__suggest {
+	padding: var(--ap-s-5);
+	background: var(--ap-paper);
+}
+
+.ap-drawer__suggest-title {
+	margin: 0 0 var(--ap-s-3);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
+	letter-spacing: var(--ap-track-eyebrow);
+	color: var(--ap-ink-muted);
+}
+
+.ap-drawer__suggest-row {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-2);
+}
+
+/* ==========================================================================
+   7. Footer
+   ========================================================================== */
+
+.ap-drawer__foot:empty {
+	display: none;
+}
+
+.ap-drawer__foot {
+	padding: var(--ap-s-3) var(--ap-s-5) calc(var(--ap-s-3) + env(safe-area-inset-bottom));
+	background: var(--ap-surface);
+	border-block-start: 1px solid var(--ap-line);
+	box-shadow: 0 -6px 20px rgba(15, 31, 61, 0.05);
+}
+
+.ap-drawer__totals {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--ap-s-3);
+	margin-block-end: 2px;
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-soft);
+}
+
+.ap-drawer__totals strong {
+	font-size: var(--ap-text-lg);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-drawer__note {
+	margin: 0 0 var(--ap-s-2);
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+}
+
+.ap-drawer__cta {
+	display: grid;
+	grid-template-columns: 1fr 1.3fr;
+	gap: var(--ap-s-2);
+}
+
+/* ==========================================================================
+   8. Small screens
+   ========================================================================== */
+
+@media (max-width: 480px) {
+	.ap-drawer {
+		inline-size: min(320px, 88vw);
+	}
+
+	.ap-drawer__head,
+	.ap-line,
+	.ap-freeship,
+	.ap-drawer__suggest,
+	.ap-drawer__foot {
+		padding-inline: var(--ap-s-4);
+	}
+}
+
+/* ==========================================================================
+   9. Quantity switcher
+   --------------------------------------------------------------------------
+   Shared by the drawer, the cart table and the single-product form. The
+   native spinner is suppressed because it is unstyleable and too small to
+   hit on touch; the two buttons replace it.
+   ========================================================================== */
+
+.ap-qty {
+	display: inline-flex;
+	align-items: center;
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	overflow: hidden;
+	transition: border-color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-qty:focus-within {
+	border-color: var(--ap-ink);
+}
+
+.ap-qty__btn {
+	display: grid;
+	place-items: center;
+	inline-size: 32px;
+	block-size: 32px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--ap-ink-soft);
+	cursor: pointer;
+	transition:
+		background-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-qty__btn:hover:not(:disabled) {
+	background: var(--ap-paper-sunk);
+	color: var(--ap-ink);
+}
+
+.ap-qty__btn:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.ap-qty__btn:focus-visible {
+	outline: none;
+	box-shadow: inset var(--ap-ring-focus);
+}
+
+/*
+ * Specificity note: Blocksy styles bare inputs with `padding: 0 15px` via
+ * --theme-form-field-padding, which outranks a single-class selector. On a
+ * 32px-wide stepper that leaves a 2px content box and the digit vanishes
+ * entirely. The element-qualified selector below wins, and box-sizing is
+ * pinned so any future padding cannot shrink the field either.
+ */
+.ap-qty input.ap-qty__input {
+	box-sizing: border-box;
+	inline-size: 38px;
+	block-size: 32px;
+	padding: 0;
+	border: 0;
+	border-inline: 1px solid var(--ap-line-soft);
+	border-radius: 0;
+	background: transparent;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	line-height: 1;
+	color: var(--ap-ink);
+	text-align: center;
+	min-block-size: 0;
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+.ap-qty__input::-webkit-outer-spin-button,
+.ap-qty__input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.ap-qty__input:focus {
+	outline: none;
+}
+
+.ap-qty--sm .ap-qty__btn {
+	inline-size: 26px;
+	block-size: 26px;
+}
+
+.ap-qty--sm input.ap-qty__input {
+	inline-size: 34px;
+	block-size: 26px;
+	font-size: var(--ap-text-xs);
+}
+
+.ap-qty--lg .ap-qty__btn {
+	inline-size: 50px;
+	block-size: 50px;
+}
+
+.ap-qty--lg input.ap-qty__input {
+	inline-size: 52px;
+	block-size: 50px;
+	font-size: var(--ap-text-md);
+}
+
+/* WooCommerce's own .quantity wrapper on templates we do not override. */
+.woocommerce .quantity .ap-qty {
+	margin: 0;
+}

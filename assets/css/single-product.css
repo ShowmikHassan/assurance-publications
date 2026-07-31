@@ -1,0 +1,712 @@
+/**
+ * Single product
+ * ==============
+ * A styling pass over WooCommerce's own structure — the markup is left
+ * alone so PDF Preview Modal, Video Reviews and bKash keep their hooks.
+ */
+
+/* ==========================================================================
+   1. Breadcrumb
+   ========================================================================== */
+
+.ap-crumb {
+	margin-block-end: var(--ap-s-5);
+	font-size: var(--ap-text-xs);
+	color: var(--ap-ink-faint);
+}
+
+.ap-crumb a {
+	color: var(--ap-ink-muted);
+	text-decoration: none;
+}
+
+.ap-crumb a:hover {
+	color: var(--ap-accent);
+}
+
+.ap-crumb__sep {
+	margin-inline: var(--ap-s-2);
+	color: var(--ap-line-strong);
+}
+
+/* ==========================================================================
+   2. Gallery
+   ========================================================================== */
+
+.woocommerce div.product div.images {
+	position: relative;
+}
+
+.woocommerce div.product div.images img {
+	border-radius: var(--ap-r-sm);
+	box-shadow: var(--ap-shadow-cover);
+}
+
+.ap-gallery-zoomable .woocommerce-product-gallery__image {
+	cursor: zoom-in;
+}
+
+.ap-gallery__zoom {
+	position: absolute;
+	inset-block-end: var(--ap-s-3);
+	inset-inline-end: var(--ap-s-3);
+	z-index: 3;
+	display: grid;
+	place-items: center;
+	inline-size: 38px;
+	block-size: 38px;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.94);
+	color: var(--ap-ink);
+	box-shadow: var(--ap-shadow-sm);
+	cursor: pointer;
+	transition:
+		transform var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-gallery__zoom:hover {
+	transform: scale(1.06);
+	background: #fff;
+}
+
+.ap-gallery__zoom:focus-visible {
+	outline: none;
+	box-shadow: var(--ap-ring-focus);
+}
+
+.woocommerce div.product div.images .flex-control-thumbs {
+	display: flex;
+	gap: var(--ap-s-2);
+	margin-block-start: var(--ap-s-3);
+	padding: 0;
+	list-style: none;
+}
+
+.woocommerce div.product div.images .flex-control-thumbs li {
+	inline-size: 68px;
+	float: none;
+	margin: 0;
+}
+
+.woocommerce div.product div.images .flex-control-thumbs img {
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-xs);
+	box-shadow: none;
+	opacity: 0.6;
+	transition:
+		opacity var(--ap-dur) var(--ap-ease),
+		border-color var(--ap-dur) var(--ap-ease);
+	cursor: pointer;
+}
+
+.woocommerce div.product div.images .flex-control-thumbs img:hover,
+.woocommerce div.product div.images .flex-control-thumbs img.flex-active {
+	opacity: 1;
+	border-color: var(--ap-ink);
+}
+
+/* ==========================================================================
+   3. Summary
+   ========================================================================== */
+
+.woocommerce div.product .product_title {
+	font-size: clamp(1.375rem, 3vw, var(--ap-text-2xl));
+	font-weight: var(--ap-fw-bold);
+	line-height: var(--ap-lh-snug);
+	color: var(--ap-ink);
+	margin-block-end: var(--ap-s-3);
+}
+
+.woocommerce div.product .woocommerce-product-rating {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-3);
+	margin-block-end: var(--ap-s-4);
+	font-size: var(--ap-text-sm);
+}
+
+.woocommerce div.product p.price,
+.woocommerce div.product span.price {
+	display: flex;
+	align-items: baseline;
+	gap: var(--ap-s-3);
+	flex-wrap: wrap;
+	margin-block: var(--ap-s-4);
+	font-size: var(--ap-text-2xl);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-accent);
+	line-height: 1.2;
+}
+
+.woocommerce div.product p.price del {
+	font-size: var(--ap-text-lg);
+	font-weight: var(--ap-fw-regular);
+	color: var(--ap-ink-faint);
+	opacity: 1;
+}
+
+.woocommerce div.product p.price ins {
+	background: none;
+	text-decoration: none;
+	color: inherit;
+	font-weight: inherit;
+}
+
+.woocommerce div.product .woocommerce-product-details__short-description {
+	font-size: var(--ap-text-base);
+	line-height: var(--ap-lh-loose);
+	color: var(--ap-ink-soft);
+	margin-top: var(--ap-s-2);
+	margin-block-end: var(--ap-s-5);
+	padding-block-end: var(--ap-s-5);
+	border-block-end: 1px solid var(--ap-line-soft);
+}
+
+.woocommerce div.product .stock.in-stock {
+	color: var(--ap-green);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+}
+
+.woocommerce div.product .stock.out-of-stock {
+	color: var(--ap-accent);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+}
+
+/* ==========================================================================
+   4. Buy box
+   ========================================================================== */
+
+.woocommerce div.product form.cart {
+	display: block;
+	margin-block-start: var(--ap-s-5);
+	margin-block-end: 0;
+}
+
+/*
+ * Blocksy wraps the quantity input and Add to Cart button in its own
+ * .ct-cart-actions div. That wrapper sizes itself to its content's
+ * intrinsic width rather than filling form.cart — on this page that
+ * left it at ~300px, so the button had no room beside the quantity
+ * stepper and always dropped to its own line. Forcing it to fill the
+ * available width and never wrap is what actually puts them side by side.
+ */
+.woocommerce div.product form.cart .ct-cart-actions {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	gap: var(--ap-s-3);
+	inline-size: 100%;
+}
+
+.woocommerce div.product form.cart .quantity {
+	margin: 0;
+	float: none;
+	flex: 0 0 auto;
+}
+
+.woocommerce div.product form.cart .button,
+.woocommerce div.product form.cart .single_add_to_cart_button {
+	flex: 1 1 200px;
+	min-block-size: 50px;
+	padding-inline: var(--ap-s-6);
+	border: 0;
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-accent);
+	color: #fff;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-semibold);
+	cursor: pointer;
+	transition: background-color var(--ap-dur) var(--ap-ease);
+}
+
+.woocommerce div.product form.cart .button:hover {
+	background: var(--ap-accent-deep);
+	color: #fff;
+}
+
+.woocommerce div.product form.cart .button:focus-visible {
+	outline: none;
+	box-shadow: var(--ap-ring-focus);
+}
+
+/* Blocksy's own wrapper around the add-to-cart form carries a 35px
+   bottom margin (its normal spacing before the next summary element).
+   With our Buy Now button inserted right after it, that left an
+   oversized gap the button's own margin-top couldn't visually cancel. */
+.woocommerce div.product .ct-product-add-to-cart {
+	margin-block-end: var(--ap-s-2) !important;
+}
+
+.ap-single__buynow {
+	inline-size: 100%;
+	min-block-size: 50px;
+	margin-block-start: var(--ap-s-2);
+	background: var(--ap-ink);
+	/* .ap-btn defaults to --ap-text-base (15px); the add-to-cart button
+	   beside it uses --ap-text-md (17px), so the pair looked mismatched. */
+	font-size: var(--ap-text-md);
+}
+
+.ap-single__buynow:hover {
+	background: #0c1830;
+}
+
+/* Variation form */
+.woocommerce div.product form.cart .variations {
+	inline-size: 100%;
+	margin-block-end: var(--ap-s-3);
+	border: 0;
+}
+
+.woocommerce div.product form.cart .variations td,
+.woocommerce div.product form.cart .variations th {
+	padding: var(--ap-s-1) 0;
+	border: 0;
+	vertical-align: middle;
+}
+
+.woocommerce div.product form.cart .variations label {
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink);
+}
+
+.woocommerce div.product form.cart .variations select {
+	inline-size: 100%;
+	min-block-size: var(--ap-control-h);
+	padding: 0 var(--ap-s-8) 0 var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background-color: var(--ap-surface);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7a71' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right var(--ap-s-3) center;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-base);
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+/* ==========================================================================
+   5. Assurance row
+   ========================================================================== */
+
+.ap-single__assure {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ap-s-2) var(--ap-s-5);
+	margin: var(--ap-s-5) 0 0;
+	padding: var(--ap-s-4);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface-alt);
+	list-style: none;
+}
+
+.ap-single__assure li {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	font-size: var(--ap-text-xs);
+	color: var(--ap-ink-soft);
+}
+
+.ap-single__assure .ap-icon {
+	color: var(--ap-green);
+	flex: none;
+}
+
+/* ==========================================================================
+   6. Meta
+   ========================================================================== */
+
+.woocommerce div.product .product_meta {
+	margin-block-start: var(--ap-s-5);
+	padding-block-start: var(--ap-s-4);
+	border-block-start: 1px solid var(--ap-line-soft);
+	font-size: var(--ap-text-xs);
+	color: var(--ap-ink-muted);
+}
+
+.woocommerce div.product .product_meta>span {
+	display: block;
+	margin-block-end: var(--ap-s-1);
+}
+
+.woocommerce div.product .product_meta .sku_wrapper {
+	display: none;
+}
+
+.woocommerce div.product .product_meta a {
+	color: var(--ap-ink-soft);
+	text-decoration: none;
+}
+
+.woocommerce div.product .product_meta a:hover {
+	color: var(--ap-accent);
+}
+
+/* ==========================================================================
+   7. Tabs
+   ========================================================================== */
+
+.woocommerce div.product .woocommerce-tabs {
+	margin-block-start: var(--ap-s-12);
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs {
+	display: flex;
+	flex-direction: row !important;
+	flex-wrap: nowrap;
+	gap: var(--ap-s-1);
+	padding: 0;
+	border-block-end: 1px solid var(--ap-line);
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs::-webkit-scrollbar {
+	display: none;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs li::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs li::after {
+	display: none;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	white-space: nowrap;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li a {
+	display: block;
+	padding: var(--ap-s-3) var(--ap-s-4);
+	border-block-end: 2px solid transparent;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-base);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink-muted);
+	text-decoration: none;
+	transition:
+		color var(--ap-dur) var(--ap-ease),
+		border-color var(--ap-dur) var(--ap-ease);
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover {
+	color: var(--ap-ink);
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a {
+	color: var(--ap-ink);
+	font-weight: var(--ap-fw-semibold);
+	border-block-end-color: var(--ap-accent);
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:focus-visible {
+	outline: 2px solid var(--ap-accent);
+	outline-offset: -2px;
+	border-radius: var(--ap-r-xs);
+}
+
+.woocommerce div.product .woocommerce-tabs .panel {
+	margin: 0;
+	padding: 0;
+	font-size: var(--ap-text-base);
+	line-height: var(--ap-lh-loose);
+	color: var(--ap-ink-soft);
+}
+
+.woocommerce div.product .woocommerce-tabs .panel h2 {
+	font-size: var(--ap-text-lg);
+	margin-block-end: var(--ap-s-3);
+}
+
+.woocommerce div.product .woocommerce-tabs .panel {
+	max-inline-size: 100%;
+	overflow-x: auto;
+}
+
+/* Product descriptions in this catalogue are HTML tables of contents. */
+.woocommerce-Tabs-panel table {
+	inline-size: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	margin-block: var(--ap-s-4);
+	font-size: var(--ap-text-sm);
+}
+
+.woocommerce-Tabs-panel table th,
+.woocommerce-Tabs-panel table td {
+	padding: var(--ap-s-2) var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	text-align: start;
+}
+
+.woocommerce-Tabs-panel table th {
+	background: var(--ap-paper-sunk);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+}
+
+.woocommerce table.shop_attributes th,
+.woocommerce table.shop_attributes td {
+	padding: var(--ap-s-2) var(--ap-s-3);
+	border-block-end: 1px solid var(--ap-line-soft);
+	font-size: var(--ap-text-sm);
+}
+
+.woocommerce table.shop_attributes th {
+	color: var(--ap-ink-muted);
+	font-weight: var(--ap-fw-medium);
+	inline-size: 30%;
+}
+
+/* ==========================================================================
+   8. Reviews
+   ========================================================================== */
+
+.woocommerce #reviews #comments ol.commentlist {
+	padding: 0;
+	list-style: none;
+}
+
+.woocommerce #reviews #comments ol.commentlist li {
+	margin-block-end: var(--ap-s-4);
+	padding: var(--ap-s-4);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	background: var(--ap-surface);
+}
+
+.woocommerce #reviews #comments ol.commentlist li .comment-text {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.woocommerce #review_form #respond textarea,
+.woocommerce #review_form #respond input[type='text'],
+.woocommerce #review_form #respond input[type='email'] {
+	inline-size: 100%;
+	padding: var(--ap-s-2) var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-base);
+}
+
+/* ==========================================================================
+   9. Related products
+   ========================================================================== */
+
+.woocommerce .related,
+.woocommerce .upsells {
+	margin-block-start: var(--ap-s-12);
+	padding-block-start: var(--ap-s-8);
+	border-block-start: 1px solid var(--ap-line);
+}
+
+.woocommerce .related>h2,
+.woocommerce .upsells>h2 {
+	font-size: var(--ap-text-xl);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+	margin-block-end: var(--ap-s-6);
+}
+
+/* ==========================================================================
+   10. Lightbox
+   ========================================================================== */
+
+.ap-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: var(--ap-z-modal);
+	display: grid;
+	place-items: center;
+	opacity: 0;
+	transition: opacity var(--ap-dur) var(--ap-ease);
+}
+
+.ap-lightbox.is-open {
+	opacity: 1;
+}
+
+.ap-lightbox__scrim {
+	position: absolute;
+	inset: 0;
+	background: rgba(12, 20, 16, 0.92);
+	cursor: zoom-out;
+}
+
+.ap-lightbox__stage {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	inline-size: min(92vw, 900px);
+	block-size: min(88vh, 900px);
+	padding: var(--ap-s-4);
+}
+
+.ap-lightbox__img {
+	max-inline-size: 100%;
+	max-block-size: 100%;
+	object-fit: contain;
+	border-radius: var(--ap-r-sm);
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+	transform: scale(0.97);
+	transition: transform var(--ap-dur-slow) var(--ap-ease-out);
+}
+
+.ap-lightbox.is-open .ap-lightbox__img {
+	transform: none;
+}
+
+.ap-lightbox__btn {
+	position: absolute;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	inline-size: 44px;
+	block-size: 44px;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.12);
+	color: #fff;
+	cursor: pointer;
+	transition: background-color var(--ap-dur) var(--ap-ease);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+}
+
+.ap-lightbox__btn:hover:not(:disabled) {
+	background: rgba(255, 255, 255, 0.24);
+}
+
+.ap-lightbox__btn:disabled {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.ap-lightbox__btn:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: 2px;
+}
+
+.ap-lightbox__btn--close {
+	inset-block-start: var(--ap-s-4);
+	inset-inline-end: var(--ap-s-4);
+}
+
+.ap-lightbox__btn--prev {
+	inset-inline-start: var(--ap-s-4);
+	inset-block-start: 50%;
+	margin-block-start: -22px;
+}
+
+.ap-lightbox__btn--next {
+	inset-inline-end: var(--ap-s-4);
+	inset-block-start: 50%;
+	margin-block-start: -22px;
+}
+
+.ap-lightbox__count {
+	position: absolute;
+	inset-block-end: var(--ap-s-5);
+	inset-inline: 0;
+	z-index: 2;
+	margin: 0;
+	text-align: center;
+	font-size: var(--ap-text-sm);
+	color: rgba(255, 255, 255, 0.7);
+	font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 575px) {
+	.ap-lightbox__btn--prev {
+		inset-inline-start: var(--ap-s-2);
+	}
+
+	.ap-lightbox__btn--next {
+		inset-inline-end: var(--ap-s-2);
+	}
+
+	.woocommerce div.product .woocommerce-tabs {
+		margin-block-start: var(--ap-s-6);
+	}
+}
+
+/* ==========================================================================
+   11. Layout
+   ========================================================================== */
+
+@media (max-width: 480px) {
+
+	/* Below ~480px even a fixed-width quantity stepper starts crowding the
+	   button's label; stack them rather than squeeze the button illegibly
+	   thin. Everywhere above this, quantity and Add to Cart stay side by
+	   side per the buy box's normal layout. */
+	.woocommerce div.product form.cart .ct-cart-actions {
+		flex-wrap: wrap;
+	}
+
+	.woocommerce div.product form.cart .quantity,
+	.woocommerce div.product form.cart .button {
+		flex: 1 1 100%;
+	}
+}
+/* ==========================================================================
+   PDF preview button (pdf-preview-modal plugin)
+   --------------------------------------------------------------------------
+   The plugin ships a cyan/violet animated gradient that belongs to no part
+   of this palette. Restyled here rather than in the plugin so an update
+   cannot revert it; the element-qualified selectors outrank the plugin's
+   single-class rules without needing !important, and its own
+   pdfPreviewGlow keyframes are reused so the shimmer survives.
+   ========================================================================== */
+
+a.pdf-preview-btn,
+button.pdf-preview-btn {
+	padding: 9px 20px;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	text-transform: none;
+	letter-spacing: 0;
+	/* --ap-brass is violet in this palette, so the warm mid-stop is an
+	   explicit amber rather than a token that would reintroduce purple. */
+	background: linear-gradient(90deg,
+			var(--ap-accent-deep) 0%,
+			var(--ap-accent) 28%,
+			#f59e0b 52%,
+			var(--ap-accent-soft) 74%,
+			var(--ap-accent-deep) 100%);
+	background-size: 300% 100%;
+	box-shadow: 0 2px 8px rgba(234, 88, 12, 0.28);
+	animation: pdfPreviewGlow 9s linear infinite;
+}
+
+a.pdf-preview-btn:hover,
+button.pdf-preview-btn:hover {
+	box-shadow: 0 4px 14px rgba(234, 88, 12, 0.36);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	a.pdf-preview-btn,
+	button.pdf-preview-btn {
+		animation: none;
+	}
+}

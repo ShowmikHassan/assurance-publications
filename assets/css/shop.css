@@ -1,0 +1,582 @@
+/**
+ * Shop archive
+ * ============
+ * Sidebar + grid. Below 992px the sidebar becomes a slide-in panel rather
+ * than stacking above the grid — stacked filters push the products a full
+ * screen down, which is the single worst pattern on mobile commerce.
+ */
+
+.ap-shop {
+	display: grid;
+	grid-template-columns: 268px minmax(0, 1fr);
+	gap: var(--ap-s-8);
+	align-items: start;
+}
+
+.ap-shop__main {
+	min-inline-size: 0;
+}
+
+/* ==========================================================================
+   1. Toolbar
+   ========================================================================== */
+
+.ap-shop__bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-4);
+	flex-wrap: wrap;
+	margin-block-end: var(--ap-s-5);
+	padding-block-end: var(--ap-s-4);
+	border-block-end: 1px solid var(--ap-line);
+}
+
+.ap-shop__bar-left {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-4);
+}
+
+.ap-shop__count {
+	margin: 0;
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-muted);
+}
+
+.ap-shop__filter-btn {
+	display: none;
+}
+
+/* WooCommerce's ordering select */
+.woocommerce-ordering select,
+.ap-shop__bar select {
+	min-block-size: var(--ap-control-h-sm);
+	padding: 0 var(--ap-s-8) 0 var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background-color: var(--ap-surface);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7a71' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right var(--ap-s-2) center;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink);
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: pointer;
+}
+
+.woocommerce-ordering select:focus {
+	outline: none;
+	border-color: var(--ap-accent);
+	box-shadow: var(--ap-ring-focus);
+}
+
+.woocommerce .woocommerce-result-count {
+	display: none;
+}
+
+/* ==========================================================================
+   2. Sidebar
+   ========================================================================== */
+
+.ap-shop__side {
+	position: sticky;
+	inset-block-start: calc(var(--admin-bar, 0px) + var(--theme-frame-size, 0px) + var(--header-sticky-height, 0px) * var(--sticky-shrink, 100) / 100 + var(--ap-s-5));
+}
+
+.ap-filters__head {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-3);
+	margin-block-end: var(--ap-s-5);
+	padding-block-end: var(--ap-s-4);
+	border-block-end: 1px solid var(--ap-line);
+}
+
+.ap-filters__title {
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+	margin-bottom: 5px;
+	gap: var(--ap-s-2);
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-filters__clear {
+	margin-inline-start: auto;
+	font-size: var(--ap-text-xs);
+	color: var(--ap-accent);
+	text-decoration: none;
+	font-weight: var(--ap-fw-medium);
+}
+
+.ap-filters__clear:hover {
+	text-decoration: underline;
+}
+
+.ap-filters__close {
+	display: none;
+}
+
+.ap-filter+.ap-filter {
+	margin-block-start: var(--ap-s-6);
+	padding-block-start: var(--ap-s-6);
+	border-block-start: 1px solid var(--ap-line-soft);
+}
+
+.ap-filter__title {
+	margin: 0 0 var(--ap-s-3);
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-filter__list,
+.ap-filter__sub {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ap-filter__sub {
+	margin-block-start: var(--ap-s-1);
+	padding-inline-start: var(--ap-s-5);
+	border-inline-start: 1px solid var(--ap-line-soft);
+}
+
+.ap-filter__item+.ap-filter__item {
+	margin-block-start: var(--ap-s-1);
+}
+
+/* ==========================================================================
+   3. Checkbox
+   ========================================================================== */
+
+.ap-check {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	padding: var(--ap-s-1) 0;
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-soft);
+	cursor: pointer;
+	user-select: none;
+}
+
+.ap-check input {
+	position: absolute;
+	opacity: 0;
+	inline-size: 1px;
+	block-size: 1px;
+}
+
+.ap-check__box {
+	display: grid;
+	place-items: center;
+	inline-size: 17px;
+	block-size: 17px;
+	flex: none;
+	border: 1.5px solid var(--ap-line-strong);
+	border-radius: var(--ap-r-xs);
+	background: var(--ap-surface);
+	color: transparent;
+	transition:
+		background-color var(--ap-dur) var(--ap-ease),
+		border-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-check:hover .ap-check__box {
+	border-color: var(--ap-ink-muted);
+}
+
+.ap-check input:checked+.ap-check__box {
+	background: var(--ap-accent);
+	border-color: var(--ap-accent);
+	color: #fff;
+}
+
+.ap-check input:focus-visible+.ap-check__box {
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-check__label {
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.ap-check input:checked~.ap-check__label {
+	color: var(--ap-ink);
+	font-weight: var(--ap-fw-medium);
+}
+
+.ap-check__count {
+	margin-inline-start: auto;
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+	font-variant-numeric: tabular-nums;
+}
+
+.ap-check--sub {
+	font-size: var(--ap-text-xs);
+}
+
+/* ==========================================================================
+   4. Price range
+   --------------------------------------------------------------------------
+   Two overlapping native range inputs. Their tracks are transparent and a
+   shared painted track sits behind; only the thumbs remain interactive,
+   which is what lets the two handles overlap without one blocking the other.
+   ========================================================================== */
+
+.ap-range {
+	position: relative;
+	block-size: 32px;
+	margin-block: var(--ap-s-2) var(--ap-s-1);
+}
+
+.ap-range__track {
+	position: absolute;
+	inset-block-start: 50%;
+	inset-inline: 0;
+	block-size: 4px;
+	margin-block-start: -2px;
+	border-radius: var(--ap-r-pill);
+	background: var(--ap-line);
+	pointer-events: none;
+}
+
+.ap-range__fill {
+	position: absolute;
+	block-size: 100%;
+	border-radius: inherit;
+	background: var(--ap-ink);
+}
+
+.ap-range__input {
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline: 0;
+	inline-size: 100%;
+	block-size: 32px;
+	margin: 0;
+	background: none;
+	pointer-events: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.ap-range__input:focus {
+	outline: none;
+}
+
+.ap-range__input::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	pointer-events: auto;
+	inline-size: 18px;
+	block-size: 18px;
+	border: 2px solid var(--ap-surface);
+	border-radius: 50%;
+	background: var(--ap-accent);
+	box-shadow: 0 1px 4px rgba(15, 31, 61, 0.25);
+	cursor: grab;
+}
+
+.ap-range__input::-moz-range-thumb {
+	pointer-events: auto;
+	inline-size: 18px;
+	block-size: 18px;
+	border: 2px solid var(--ap-surface);
+	border-radius: 50%;
+	background: var(--ap-accent);
+	box-shadow: 0 1px 4px rgba(15, 31, 61, 0.25);
+	cursor: grab;
+}
+
+.ap-range__input::-moz-range-track {
+	background: none;
+}
+
+.ap-range__input:focus-visible::-webkit-slider-thumb {
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-range__input:focus-visible::-moz-range-thumb {
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-range__readout {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	margin: 0;
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+}
+
+.ap-range__dash {
+	color: var(--ap-ink-faint);
+	font-weight: var(--ap-fw-regular);
+}
+
+/* ==========================================================================
+   5. Best-selling mini list
+   ========================================================================== */
+
+.ap-minilist {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ap-minilist__item+.ap-minilist__item {
+	margin-block-start: var(--ap-s-3);
+	padding-block-start: var(--ap-s-3);
+	border-block-start: 1px solid var(--ap-line-soft);
+}
+
+.ap-minilist__link {
+	display: grid;
+	grid-template-columns: 44px minmax(0, 1fr);
+	gap: var(--ap-s-3);
+	align-items: center;
+	text-decoration: none;
+}
+
+.ap-minilist__media {
+	inline-size: 44px;
+	aspect-ratio: var(--ap-cover-ratio);
+	border-radius: 2px;
+	overflow: hidden;
+	background: var(--ap-paper-sunk);
+	box-shadow: var(--ap-shadow-xs);
+}
+
+.ap-minilist__media img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.ap-minilist__body {
+	min-inline-size: 0;
+}
+
+.ap-minilist__title {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-medium);
+	line-height: var(--ap-lh-snug);
+	color: var(--ap-ink);
+}
+
+.ap-minilist__link:hover .ap-minilist__title {
+	color: var(--ap-accent);
+}
+
+.ap-minilist__price {
+	display: block;
+	margin-block-start: 2px;
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-accent);
+}
+
+.ap-minilist__price del {
+	display: none;
+}
+
+/* ==========================================================================
+   6. Grid + pagination
+   ========================================================================== */
+
+.ap-shop__grid {
+	min-block-size: 200px;
+}
+
+/* The empty state is injected as a grid child, so it has to span all
+   columns rather than sit in the first one. */
+.ap-empty-wrap {
+	grid-column: 1 / -1;
+	list-style: none;
+}
+
+.woocommerce nav.woocommerce-pagination {
+	margin-block-start: var(--ap-s-8);
+}
+
+.woocommerce nav.woocommerce-pagination ul {
+	display: flex;
+	justify-content: center;
+	gap: var(--ap-s-2);
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.woocommerce nav.woocommerce-pagination ul li {
+	border: 0;
+	margin: 0;
+	overflow: visible;
+}
+
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+	display: grid;
+	place-items: center;
+	min-inline-size: 38px;
+	block-size: 38px;
+	padding: 0 var(--ap-s-2);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink-soft);
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+.woocommerce nav.woocommerce-pagination ul li a:hover {
+	border-color: var(--ap-ink);
+	color: var(--ap-ink);
+	background: var(--ap-surface);
+}
+
+.woocommerce nav.woocommerce-pagination ul li span.current {
+	background: var(--ap-accent);
+	border-color: var(--ap-accent);
+	color: #fff;
+}
+
+/* ==========================================================================
+   7. Responsive — sidebar becomes a panel
+   ========================================================================== */
+
+@media (max-width: 991px) {
+	.ap-shop {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--ap-s-4);
+	}
+
+	.ap-shop__filter-btn {
+		display: inline-flex;
+	}
+
+	/*
+	 * The panel is taller than the viewport once the categories and the
+	 * best-seller strip are in it. Opening it also locks body scroll, so
+	 * without its own scroll container everything below the fold was simply
+	 * unreachable. overscroll-behavior keeps the gesture inside the panel
+	 * instead of chaining to the locked page behind it.
+	 */
+	.ap-shop__side {
+		position: fixed;
+		inset-block: 0;
+		inset-inline-start: 0;
+		z-index: var(--ap-z-drawer);
+		inline-size: min(320px, 88vw);
+		max-block-size: none;
+		padding: var(--ap-s-5);
+		padding-block-end: calc(var(--ap-s-8) + env(safe-area-inset-bottom));
+		background: var(--ap-paper);
+		box-shadow: var(--ap-shadow-panel);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		transform: translateX(-100%);
+		transition: transform var(--ap-dur-panel) var(--ap-ease-out);
+		visibility: hidden;
+	}
+
+	body.admin-bar .ap-shop__side {
+		inset-block-start: 32px;
+	}
+
+	.ap-shop__side.is-open {
+		transform: none;
+		visibility: visible;
+	}
+
+	.ap-filters__close {
+		display: inline-flex;
+		margin-inline-start: auto;
+	}
+
+	.ap-filters__clear {
+		margin-inline-start: 0;
+	}
+
+	.ap-shop__scrim {
+		position: fixed;
+		inset: 0;
+		z-index: var(--ap-z-overlay);
+		background: rgba(15, 31, 61, 0.42);
+		-webkit-backdrop-filter: blur(2px);
+		backdrop-filter: blur(2px);
+	}
+
+	.ap-shop__scrim[hidden] {
+		display: none;
+	}
+}
+
+@media (max-width: 782px) {
+	body.admin-bar .ap-shop__side {
+		inset-block-start: 46px;
+	}
+}
+
+@media (max-width: 575px) {
+	.ap-shop__bar {
+		flex-wrap: wrap;
+		gap: var(--ap-s-3);
+	}
+
+	.ap-shop__bar-left {
+		display: contents;
+	}
+
+	.ap-shop__filter-btn {
+		order: 1;
+		flex: 0 0 auto;
+	}
+
+	.woocommerce-ordering,
+	.ap-shop__bar form.woocommerce-ordering {
+		order: 2;
+		flex: 1 1 0;
+		inline-size: auto;
+	}
+
+	.woocommerce-ordering select {
+		inline-size: 100%;
+	}
+
+	.ap-shop__filter-btn,
+	.woocommerce-ordering select {
+		box-sizing: border-box;
+		block-size: 44px;
+		border-radius: var(--ap-r-md);
+		border-color: var(--ap-line-strong);
+	}
+
+	.ap-shop__count {
+		order: 3;
+		flex: 0 0 100%;
+	}
+}

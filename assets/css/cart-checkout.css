@@ -1,0 +1,2077 @@
+/**
+ * Cart + Checkout
+ * ===============
+ * Both pages share the panel, form-control and totals language, so they
+ * share one stylesheet — it loads on either page and nowhere else.
+ */
+
+/* ==========================================================================
+   1. Panels — the shared surface for every boxed section
+   ========================================================================== */
+
+.ap-panel {
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	overflow: hidden;
+}
+
+.ap-panel+.ap-panel {
+	margin-block-start: var(--ap-s-4);
+}
+
+.ap-panel__head {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-3);
+	padding: var(--ap-s-4) var(--ap-s-5);
+	border-block-end: 1px solid var(--ap-line-soft);
+	background: var(--ap-surface-alt);
+}
+
+/* Numbered step marker. Gives the checkout an explicit sequence without
+   a full progress bar, which would over-promise on a one-page form. */
+.ap-panel__step {
+	display: grid;
+	place-items: center;
+	inline-size: 24px;
+	block-size: 24px;
+	flex: none;
+	border-radius: 50%;
+	background: var(--ap-ink);
+	color: var(--ap-ink-invert);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-bold);
+	line-height: 1;
+}
+
+.ap-panel__title {
+	margin: 0;
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-panel__body {
+	padding: var(--ap-s-5);
+}
+
+/* ==========================================================================
+   1b. Escape the constrained content width
+   --------------------------------------------------------------------------
+   Blocksy's theme.json declares a `contentSize`, and WordPress wraps page
+   content in .is-layout-constrained, which caps every direct child at that
+   width (~750px). That is right for an article and wrong for a two-column
+   cart or checkout — it squeezed both into the left half of the viewport
+   with the summary column crushed beside them.
+   ========================================================================== */
+
+/* .woocommerce-cart .entry-content.is-layout-constrained>.woocommerce,
+.woocommerce-checkout .entry-content.is-layout-constrained>.woocommerce,
+.woocommerce-cart .entry-content.is-layout-constrained>.ap-cart,
+.woocommerce-checkout .entry-content.is-layout-constrained>.ap-checkout,
+.woocommerce-cart .woocommerce,
+.woocommerce-checkout .woocommerce {
+	max-inline-size: none;
+} */
+
+/* ==========================================================================
+   2. Cart layout
+   ========================================================================== */
+
+.ap-cart {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+	gap: var(--ap-s-8);
+	align-items: start;
+}
+
+.ap-cart__main {
+	min-inline-size: 0;
+}
+
+.ap-cart__form {
+	min-inline-size: 0;
+}
+
+.ap-cart__items {
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	overflow: hidden;
+}
+
+@media (max-width: 991px) {
+	.ap-cart {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--ap-s-6);
+	}
+}
+
+/* ==========================================================================
+   3. Cart row
+   --------------------------------------------------------------------------
+   Grid rather than a table so the same markup reflows to a stacked card on
+   mobile without a second set of pseudo-element labels.
+   ========================================================================== */
+
+.ap-cart-row {
+	display: grid;
+	grid-template-columns: 72px minmax(0, 1fr) auto auto 36px;
+	gap: var(--ap-s-4);
+	align-items: center;
+	padding: var(--ap-s-4) var(--ap-s-5);
+	border-block-end: 1px solid var(--ap-line-soft);
+	transition: opacity var(--ap-dur) var(--ap-ease);
+}
+
+.ap-cart-row:last-child {
+	border-block-end: 0;
+}
+
+.ap-cart-row.is-busy {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.ap-cart-row.is-leaving {
+	animation: ap-line-out var(--ap-dur-slow) var(--ap-ease) forwards;
+}
+
+.ap-cart-row__media {
+	inline-size: 72px;
+	aspect-ratio: var(--ap-cover-ratio);
+	border-radius: 2px;
+	overflow: hidden;
+	background: var(--ap-paper-sunk);
+	box-shadow: var(--ap-shadow-xs);
+}
+
+.ap-cart-row__img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.ap-cart-row__info {
+	min-inline-size: 0;
+}
+
+.ap-cart-row__title {
+	margin: 0 0 var(--ap-s-1);
+	font-size: var(--ap-text-base);
+	font-weight: var(--ap-fw-semibold);
+	line-height: var(--ap-lh-snug);
+}
+
+.ap-cart-row__title a {
+	color: var(--ap-ink);
+	text-decoration: none;
+}
+
+.ap-cart-row__title a:hover {
+	color: var(--ap-accent);
+}
+
+.ap-cart-row__note {
+	margin: var(--ap-s-1) 0 0;
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+}
+
+.ap-cart-row__note--warn {
+	color: var(--ap-accent);
+}
+
+.ap-cart-row__unit {
+	display: flex;
+	align-items: baseline;
+	gap: var(--ap-s-2);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-muted);
+}
+
+.ap-cart-row__unit-label {
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+}
+
+.ap-cart-row__total {
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+	white-space: nowrap;
+	text-align: end;
+	min-inline-size: 90px;
+}
+
+.ap-cart-row__remove {
+	inline-size: 34px;
+	block-size: 34px;
+	color: var(--ap-ink-faint);
+}
+
+.ap-cart-row__remove:hover {
+	color: var(--ap-accent);
+	background: var(--ap-accent-tint);
+	border-color: transparent;
+}
+
+.ap-cart-row__qty-fixed {
+	display: inline-grid;
+	place-items: center;
+	inline-size: 32px;
+	block-size: 32px;
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink-muted);
+}
+
+@media (max-width: 700px) {
+
+	.ap-cart-row {
+		grid-template-columns: 64px minmax(0, 1fr) auto;
+		grid-template-areas:
+			'media info remove'
+			'media qty  total';
+		gap: var(--ap-s-2) var(--ap-s-3);
+		align-items: start;
+		padding: var(--ap-s-4);
+	}
+
+	.ap-cart-row__media {
+		grid-area: media;
+		inline-size: 64px;
+	}
+
+	.ap-cart-row__info {
+		grid-area: info;
+	}
+
+	.ap-cart-row__qty {
+		grid-area: qty;
+		align-self: center;
+	}
+
+	.ap-cart-row__total {
+		grid-area: total;
+		align-self: center;
+		min-inline-size: 0;
+	}
+
+	.ap-cart-row__remove {
+		grid-area: remove;
+		inline-size: 32px;
+		block-size: 32px;
+	}
+}
+
+/* ==========================================================================
+   4. Cart actions + coupon
+   ========================================================================== */
+
+.ap-cart__actions {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--ap-s-5);
+	flex-wrap: wrap;
+	margin-block-start: var(--ap-s-5);
+}
+
+.ap-coupon {
+	flex: 1 1 280px;
+	max-inline-size: 340px;
+}
+
+.ap-coupon__label {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	margin-block-end: var(--ap-s-2);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
+	letter-spacing: var(--ap-track-eyebrow);
+	color: var(--ap-ink-muted);
+}
+
+.ap-coupon__row {
+	display: flex;
+	gap: var(--ap-s-2);
+}
+
+.ap-coupon__input {
+	flex: 1;
+	min-inline-size: 0;
+	block-size: var(--ap-control-h);
+	height: auto !important;
+	padding-inline: var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink);
+	text-transform: uppercase;
+}
+
+.ap-coupon__input:focus {
+	outline: none;
+	border-color: var(--ap-accent);
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-coupon__msg {
+	margin: var(--ap-s-2) 0 0;
+	font-size: var(--ap-text-xs);
+	min-block-size: 1em;
+}
+
+.ap-coupon__msg.is-error {
+	color: var(--ap-accent);
+}
+
+.ap-coupon__msg.is-ok {
+	color: var(--ap-green);
+}
+
+/* Input and button must line up exactly — both pinned to the same fixed
+   height rather than one being a min-height, so a border or line-height
+   difference between the two elements cannot throw them out of sync. */
+.ap-coupon__row {
+	align-items: stretch;
+}
+
+.ap-coupon__input,
+.ap-coupon__row .ap-btn {
+	box-sizing: border-box;
+	block-size: var(--ap-control-h);
+}
+
+.ap-cart__continue {
+	align-self: center;
+}
+
+/* ==========================================================================
+   5. Totals
+   ========================================================================== */
+
+/* Offset clears Blocksy's sticky header, which publishes --header-height. */
+.ap-cart__totals {
+	position: sticky;
+	inset-block-start: calc(var(--header-height, 70px) + var(--ap-s-5));
+}
+
+body.admin-bar .ap-cart__totals {
+	inset-block-start: calc(var(--header-height, 70px) + var(--ap-s-5) + 32px);
+}
+
+@media (max-width: 991px) {
+
+	.ap-cart__totals,
+	body.admin-bar .ap-cart__totals {
+		position: static;
+		inset-block-start: auto;
+	}
+}
+
+.ap-cart__totals .cart_totals {
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	overflow: hidden;
+}
+
+/*
+ * WooCommerce's small-screen stylesheet turns .shop_table_responsive into a
+ * stacked list: it hides every <th> and re-creates the label from the <td>'s
+ * data-title attribute. Our own rows (delivery area, shipment note) carry no
+ * data-title, so their labels disappeared entirely, and the rows that do have
+ * one rendered as "উপমোট:1,870৳" with a stray colon. Keeping the real
+ * two-column table at every width fixes both and matches the desktop layout.
+ */
+.woocommerce .ap-cart__totals table.shop_table_responsive tr {
+	display: table-row !important;
+}
+
+.woocommerce .ap-cart__totals table.shop_table_responsive tr th,
+.woocommerce .ap-cart__totals table.shop_table_responsive tr td {
+	display: table-cell !important;
+}
+
+.woocommerce .ap-cart__totals table.shop_table_responsive tr td::before {
+	content: none !important;
+}
+
+.woocommerce .ap-cart__totals table.shop_table {
+	inline-size: 100% !important;
+	table-layout: auto;
+}
+
+.woocommerce .ap-cart__totals table.shop_table th {
+	inline-size: 45%;
+	text-align: start !important;
+}
+
+.woocommerce .ap-cart__totals table.shop_table td {
+	text-align: end !important;
+	white-space: nowrap;
+}
+
+/*
+ * The shipping cell is a block (method, destination, change-address link,
+ * calculator), not a bare amount, so it reads left-aligned like its label.
+ *
+ * Where the two cells stack, the label's bottom padding meets the cell's top
+ * padding and opens a dead band under "চালান" — so the facing edges are
+ * zeroed and the spacing is carried by the content instead.
+ */
+.woocommerce .ap-cart__totals table.shop_table .woocommerce-shipping-totals th,
+.woocommerce .ap-cart__totals table.shop_table .woocommerce-shipping-totals td,
+.woocommerce .ap-summary table.shop_table .woocommerce-shipping-totals th,
+.woocommerce .ap-summary table.shop_table .woocommerce-shipping-totals td,
+.ap-summary .woocommerce-shipping-totals th,
+.ap-summary .woocommerce-shipping-totals td {
+	text-align: start !important;
+	vertical-align: top;
+}
+
+/*
+ * Blocksy replaces this row wholesale: there is no <th>, the row is a single
+ * colspan="2" cell, and "চালান" is a .ct-shipping-heading div inside it. So
+ * the cell carries the row's padding and the heading carries the gap under
+ * itself — matching the উপমোট row above.
+ */
+.ap-cart__totals .shop_table .shipping td .ct-shipping-heading,
+.ap-summary .shop_table .shipping td .ct-shipping-heading {
+	margin: 0 0 var(--ap-s-1);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	line-height: var(--ap-lh-snug);
+	color: var(--ap-ink);
+}
+
+/* The cart's cell stacks method, destination and the change-address link,
+   so it needs the looser leading; the checkout's is a single line. */
+.woocommerce .ap-cart__totals table.shop_table .woocommerce-shipping-totals td {
+	line-height: 1.9;
+}
+
+.woocommerce .ap-summary table.shop_table .woocommerce-shipping-totals td,
+.ap-summary .woocommerce-shipping-totals td {
+	line-height: var(--ap-lh-normal);
+}
+
+/* ==========================================================================
+   5c. Applied coupon row
+   ========================================================================== */
+
+.ap-cart__totals .cart-discount th,
+.ap-summary .cart-discount th {
+	color: var(--ap-green-deep);
+	font-weight: var(--ap-fw-semibold);
+}
+
+.ap-cart__totals .cart-discount td,
+.ap-summary .cart-discount td {
+	color: var(--ap-green-deep);
+	white-space: nowrap;
+}
+
+/* Was a bare inline link jammed against the amount. */
+.woocommerce-remove-coupon {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	margin-inline-start: var(--ap-s-2);
+	padding: 3px 9px;
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-pill);
+	background: var(--ap-surface);
+	font-size: var(--ap-text-2xs);
+	font-weight: var(--ap-fw-semibold);
+	line-height: 1.4;
+	color: var(--ap-ink-muted);
+	text-decoration: none;
+	vertical-align: middle;
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+.woocommerce-remove-coupon::before {
+	content: '\00d7';
+	font-size: 13px;
+	line-height: 1;
+}
+
+.woocommerce-remove-coupon:hover {
+	border-color: var(--ap-danger);
+	background: var(--ap-danger-tint);
+	color: var(--ap-danger);
+}
+
+.woocommerce .ap-cart__totals table.shop_table .woocommerce-shipping-totals td,
+.woocommerce .ap-summary table.shop_table .woocommerce-shipping-totals td,
+.ap-summary .woocommerce-shipping-totals td {
+	padding-block: var(--ap-s-3) !important;
+}
+
+/* WooCommerce's method list and destination line both carry their own
+   margins, which stack on top of the padding above. */
+.ap-cart__totals .woocommerce-shipping-totals ul#shipping_method,
+.ap-summary .woocommerce-shipping-totals ul#shipping_method,
+.ap-cart__totals .woocommerce-shipping-totals p,
+.ap-summary .woocommerce-shipping-totals p {
+	margin-block: 0;
+}
+
+.ap-cart__totals .woocommerce-shipping-totals ul#shipping_method li,
+.ap-summary .woocommerce-shipping-totals ul#shipping_method li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.woocommerce .ap-cart__totals .woocommerce-shipping-totals td,
+.woocommerce .ap-summary .woocommerce-shipping-totals td,
+.ap-summary .woocommerce-shipping-totals td {
+	white-space: normal;
+	font-size: 12px !important;
+}
+
+.woocommerce .ap-cart__totals .woocommerce-shipping-totals td *,
+.woocommerce .ap-summary .woocommerce-shipping-totals td *,
+.ap-summary .woocommerce-shipping-totals td * {
+	font-size: 12px !important;
+}
+
+.ap-cart__totals .woocommerce-shipping-totals ul#shipping_method {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ap-cart__totals .woocommerce-shipping-totals ul#shipping_method li {
+	margin: 0;
+	padding: 0;
+}
+
+.ap-cart__totals .woocommerce-shipping-destination {
+	margin: 0;
+	font-size: var(--ap-text-xs);
+	line-height: 1.9;
+	color: var(--ap-ink-muted);
+}
+
+.ap-calc__toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ap-s-1);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-accent);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	cursor: pointer;
+}
+
+.ap-calc__toggle:hover {
+	color: var(--ap-accent-deep);
+}
+
+.ap-calc__form {
+	margin-block-start: var(--ap-s-3);
+	padding: var(--ap-s-3);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-paper-sunk);
+	text-align: start;
+}
+
+.ap-calc__form .form-row {
+	margin-block-end: var(--ap-s-3);
+}
+
+.ap-calc__form label {
+	display: block;
+	margin-block-end: var(--ap-s-2);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink-soft);
+}
+
+.ap-calc__form select,
+.ap-calc__form input.input-text {
+	inline-size: 100%;
+	box-sizing: border-box;
+	min-block-size: var(--ap-control-h);
+	padding: var(--ap-s-2) var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-sm);
+	color: var(--ap-ink);
+}
+
+.ap-calc__actions {
+	margin: 0;
+}
+
+/* ==========================================================================
+   5b. Shipment note — shared by the cart totals and checkout review tables
+   ========================================================================== */
+
+.ap-shipping-note-row td {
+	text-align: start !important;
+	white-space: normal !important;
+	border-block-end: 1px solid var(--ap-line-soft);
+}
+
+.ap-shipnote {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-2);
+	padding: var(--ap-s-3);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-paper-sunk);
+}
+
+.ap-shipnote__line {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--ap-s-2);
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-regular);
+	line-height: var(--ap-lh-snug);
+	color: var(--ap-ink-soft);
+	text-align: start;
+	white-space: normal;
+}
+
+.ap-shipnote__line .ap-icon {
+	flex: none;
+	margin-block-start: 1px;
+	color: var(--ap-accent);
+}
+
+.ap-shipnote__line .amount,
+.ap-shipnote__line strong {
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+	white-space: nowrap;
+}
+
+.ap-cart__totals .cart_totals>h2 {
+	margin: 0;
+	padding: var(--ap-s-4) var(--ap-s-5);
+	border-block-end: 1px solid var(--ap-line-soft);
+	background: var(--ap-surface-alt);
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+}
+
+.ap-cart__totals table.shop_table {
+	inline-size: 100%;
+	margin: 0;
+	border: 0;
+	border-collapse: collapse;
+}
+
+.ap-cart__totals table.shop_table th,
+.ap-cart__totals table.shop_table td {
+	padding: var(--ap-s-3) var(--ap-s-5);
+	border: 0;
+	border-block-end: 1px solid var(--ap-line-soft);
+	font-size: var(--ap-text-sm);
+	vertical-align: top;
+}
+
+.ap-cart__totals table.shop_table th {
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink-muted);
+}
+
+.ap-cart__totals table.shop_table td {
+	color: var(--ap-ink);
+	font-weight: var(--ap-fw-medium);
+}
+
+.ap-cart__totals .order-total th,
+.ap-cart__totals .order-total td {
+	border-block-end: 0;
+	padding-block: var(--ap-s-4);
+	font-size: var(--ap-text-md);
+	color: var(--ap-ink);
+	font-weight: var(--ap-fw-bold);
+}
+
+.ap-cart__totals .order-total td {
+	color: var(--ap-accent);
+	font-size: var(--ap-text-lg);
+}
+
+.ap-cart__totals .wc-proceed-to-checkout {
+	padding: var(--ap-s-5);
+	border-block-start: 1px solid var(--ap-line-soft);
+}
+
+.ap-cart__totals .wc-proceed-to-checkout .checkout-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 100%;
+	min-block-size: 50px;
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-accent);
+	color: #fff;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-semibold);
+	text-decoration: none;
+	transition: background-color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-cart__totals .wc-proceed-to-checkout .checkout-button:hover {
+	background: var(--ap-accent-deep);
+	color: #fff;
+}
+
+.ap-band-tag {
+	display: inline-block;
+	margin-inline-start: var(--ap-s-2);
+	padding: 1px 6px;
+	border-radius: var(--ap-r-xs);
+	background: var(--ap-brass-tint);
+	color: var(--ap-brass-deep);
+	font-size: var(--ap-text-2xs);
+	font-weight: var(--ap-fw-semibold);
+}
+
+.ap-cart__totals .ap-freeship {
+	border-block-end: 1px solid var(--ap-line-soft);
+}
+
+/* ==========================================================================
+   6. Suggestions carousel
+   ========================================================================== */
+
+.ap-suggest__track {
+	scrollbar-width: none;
+	/* Snapping guarantees the strip settles on a card edge even if a step
+	   calculation is a pixel or two out. */
+	scroll-snap-type: x mandatory;
+}
+
+.ap-suggest__track .ap-suggest__cell {
+	scroll-snap-align: start;
+}
+
+.ap-suggest__track::-webkit-scrollbar {
+	display: none;
+}
+
+.ap-suggest__track .ap-suggest__cell {
+	flex: 0 0 calc(50% - var(--ap-s-4) / 2);
+	min-inline-size: 0;
+	transition:
+		opacity var(--ap-dur-slow) var(--ap-ease),
+		transform var(--ap-dur-slow) var(--ap-ease);
+}
+
+/* Title and arrows share one row at every width — base.css turns the
+   generic section head into a column under 575px. */
+.ap-suggest .ap-section-head {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-3);
+	flex-wrap: nowrap;
+	margin-block-end: var(--ap-s-4);
+}
+
+.ap-suggest .ap-section-head__text {
+	min-inline-size: 0;
+}
+
+.ap-suggest .ap-scroller-nav {
+	display: inline-flex;
+	flex: none;
+}
+
+.ap-suggest {
+	padding-block-end: 0;
+	margin-block-end: 0;
+}
+
+@media (max-width: 575px) {
+	.ap-suggest__track .ap-suggest__cell {
+		flex: 0 0 100%;
+	}
+}
+
+/* Centre the cover so the media panel does not stretch to the card height. */
+.ap-suggest__cell .ap-card--compact {
+	align-items: center;
+}
+
+.ap-suggest__cell .ap-card--compact .ap-card__media {
+	block-size: 100%;
+	padding-block: var(--ap-s-3);
+}
+
+/* product-card.css stacks the card foot and stretches its actions under
+   575px, which turns the compact card's bag button into a tall block. */
+.ap-suggest__cell .ap-card--compact .ap-card__foot {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-2);
+}
+
+.ap-suggest__cell .ap-card--compact .ap-card__actions {
+	flex: none;
+}
+
+.ap-suggest__cell .ap-card--compact .ap-card__bag {
+	inline-size: var(--ap-control-h-sm);
+	block-size: var(--ap-control-h-sm);
+	min-block-size: 0;
+	flex: none;
+	padding: 0;
+}
+
+.ap-suggest__cell.is-leaving {
+	opacity: 0;
+	transform: scale(0.94);
+}
+
+.ap-suggest__cell.is-entering {
+	animation: ap-cell-in var(--ap-dur-slow) var(--ap-ease-out);
+}
+
+@keyframes ap-cell-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+}
+
+/* ==========================================================================
+   7. Checkout layout
+   ========================================================================== */
+
+/*
+ * Blocksy adds .ct-woocommerce-checkout to the checkout <form> and makes it
+ * a two-column grid of its own. Our template already lays out its own
+ * columns, so the parent's grid nested ours inside its first track — the
+ * whole checkout collapsed into the left half of the page with the summary
+ * crushed beside it. Hand layout control back to our grid.
+ */
+form.ap-checkout.ct-woocommerce-checkout,
+form.ap-checkout {
+	display: block;
+}
+
+.ap-checkout__brand {
+	display: none;
+}
+
+
+.ap-checkout .ap-checkout__grid {
+	margin-inline: auto;
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+	/* Row gap is only ever the space above the reassurance strip, so it
+	   matches the gap between the panels stacked above it rather than the
+	   wider gutter between the two columns. */
+	gap: var(--ap-s-4) var(--ap-s-8);
+	align-items: start;
+}
+
+/*
+ * The reassurance strip lives inside the left column, so it follows the
+ * payment card directly however tall the summary grows. An earlier version
+ * made it a grid child in row 2 with the summary spanning both rows, but a
+ * spanning item distributes its surplus height across every row it covers —
+ * which inflated row 1 and left a large gap above the strip on long orders.
+ */
+/*
+ * Both columns stick. Whichever is shorter stays in view while the taller
+ * one scrolls — with a long book list the summary is far taller than the
+ * form, so without this the left column scrolled away into blank space.
+ * A column taller than the viewport simply behaves as static until its
+ * bottom is reached, which is the desired fallback.
+ */
+.ap-checkout .ap-checkout__main {
+	grid-column: 1;
+	position: sticky;
+	inset-block-start: var(--ap-s-5);
+	align-self: start;
+}
+
+body.admin-bar .ap-checkout .ap-checkout__main {
+	inset-block-start: calc(var(--ap-s-5) + 32px);
+}
+
+.ap-checkout .ap-checkout__side {
+	grid-column: 2;
+}
+
+.ap-checkout__sticky {
+	position: sticky;
+	inset-block-start: var(--ap-s-5);
+}
+
+@media (max-width: 991px) {
+	.ap-checkout .ap-checkout__grid {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--ap-s-4);
+	}
+
+	.ap-checkout__sticky {
+		position: static;
+	}
+}
+
+/* ==========================================================================
+   8. Form controls
+   ========================================================================== */
+
+.ap-checkout .form-row,
+.woocommerce form .form-row {
+	display: flex;
+	flex-direction: column;
+	margin: 0 0 var(--ap-s-4);
+	padding: 0;
+}
+
+.ap-checkout .form-row label,
+.woocommerce form .form-row label {
+	margin-block-end: var(--ap-s-2);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink);
+}
+
+.woocommerce form .form-row .required {
+	color: var(--ap-accent);
+	text-decoration: none;
+	border: 0;
+}
+
+.woocommerce form .form-row .optional {
+	color: var(--ap-ink-faint);
+	font-weight: var(--ap-fw-regular);
+}
+
+.ap-checkout input[type='text'],
+.ap-checkout input[type='email'],
+.ap-checkout input[type='tel'],
+.ap-checkout textarea,
+.ap-checkout select,
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea,
+.woocommerce form .form-row select {
+	inline-size: 100%;
+	min-block-size: var(--ap-control-h);
+	padding: var(--ap-s-2) var(--ap-s-3);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-base);
+	color: var(--ap-ink);
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		box-shadow var(--ap-dur) var(--ap-ease);
+}
+
+.ap-checkout textarea,
+.woocommerce form .form-row textarea {
+	min-block-size: 96px;
+	resize: vertical;
+	line-height: var(--ap-lh-normal);
+}
+
+.ap-checkout input:focus,
+.ap-checkout textarea:focus,
+.ap-checkout select:focus,
+.woocommerce form .form-row input.input-text:focus,
+.woocommerce form .form-row textarea:focus,
+.woocommerce form .form-row select:focus {
+	outline: none;
+	border-color: var(--ap-accent);
+	box-shadow: var(--ap-ring-focus);
+}
+
+/* Native select gets a real chevron; select2 is dequeued on this page. */
+.ap-checkout select,
+.woocommerce form .form-row select {
+	-webkit-appearance: none;
+	appearance: none;
+	padding-inline-end: var(--ap-s-8);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7a71' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right var(--ap-s-3) center;
+	cursor: pointer;
+}
+
+[dir='rtl'] .ap-checkout select {
+	background-position: left var(--ap-s-3) center;
+}
+
+/* Two-up rows */
+.woocommerce form .form-row-first,
+.woocommerce form .form-row-last {
+	inline-size: 100%;
+}
+
+/*
+ * form-billing.php wraps every field in .woocommerce-billing-fields >
+ * .woocommerce-billing-fields__field-wrapper, two levels below
+ * .ap-panel__body — so a grid declared on .ap-panel__body itself never
+ * reaches the form rows; only its direct child (.woocommerce-billing-fields)
+ * would receive the column tracks, which is why phone/email fell back to
+ * one-per-row at every width. The grid has to live on the actual parent of
+ * the .form-row elements.
+ */
+@media (min-width: 576px) {
+	.ap-checkout .woocommerce-billing-fields__field-wrapper {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0 var(--ap-s-4);
+	}
+
+	.woocommerce form .form-row-first {
+		grid-column: 1;
+	}
+
+	.woocommerce form .form-row-last {
+		grid-column: 2;
+	}
+
+	.woocommerce form .form-row-wide {
+		grid-column: 1 / -1;
+	}
+}
+
+/* Country field is locked to Bangladesh and hidden. */
+#billing_country_field,
+.ap-hidden {
+	display: none !important;
+}
+
+/* ==========================================================================
+   9. Collapsible order note
+   ========================================================================== */
+
+.ap-note {
+	margin-top: 20px;
+	padding: var(--ap-s-4) var(--ap-s-5);
+}
+
+.ap-note__check {
+	position: absolute;
+	opacity: 0;
+	inline-size: 1px;
+	block-size: 1px;
+}
+
+.ap-note__label {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-3);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink);
+	cursor: pointer;
+	user-select: none;
+}
+
+.ap-note__box {
+	display: grid;
+	place-items: center;
+	inline-size: 20px;
+	block-size: 20px;
+	flex: none;
+	border: 1.5px solid var(--ap-line-strong);
+	border-radius: var(--ap-r-xs);
+	background: var(--ap-surface);
+	color: transparent;
+	transition:
+		background-color var(--ap-dur) var(--ap-ease),
+		border-color var(--ap-dur) var(--ap-ease),
+		color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-note__check:checked+.ap-note__label .ap-note__box {
+	background: var(--ap-ink);
+	border-color: var(--ap-ink);
+	color: #fff;
+}
+
+.ap-note__check:focus-visible+.ap-note__label .ap-note__box {
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-note__field {
+	margin-block-start: var(--ap-s-4);
+}
+
+.ap-note__field .form-row {
+	margin-block-end: 0;
+}
+
+/* The visible label is the checkbox row; the field's own label repeats it. */
+.ap-note__field label {
+	display: none;
+}
+
+/* ==========================================================================
+   10. Order review
+   ========================================================================== */
+
+.ap-summary .shop_table {
+	inline-size: 100%;
+	border: 0;
+	border-collapse: collapse;
+}
+
+.ap-summary .shop_table th,
+.ap-summary .shop_table td {
+	padding: var(--ap-s-3) 0;
+	border: 0;
+	border-block-end: 1px solid var(--ap-line-soft);
+	font-size: var(--ap-text-sm);
+	text-align: start;
+}
+
+.ap-summary .shop_table td {
+	white-space: nowrap;
+}
+
+.ap-summary .cart_item .product-name {
+	color: var(--ap-ink);
+	font-weight: var(--ap-fw-medium);
+	line-height: var(--ap-lh-snug);
+	white-space: normal;
+}
+
+.ap-summary .product-quantity {
+	color: var(--ap-ink-faint);
+	font-weight: var(--ap-fw-regular);
+}
+
+.ap-summary tfoot .order-total th,
+.ap-summary tfoot .order-total td {
+	border-block-end: 0;
+	padding-block: var(--ap-s-3) 0 !important;
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-summary tfoot .order-total td {
+	color: var(--ap-accent);
+	font-size: var(--ap-text-lg);
+}
+
+/* Only the first 3 items show by default (see checkout.js); the toggle
+   row that reveals the rest borrows the summary table's own row rhythm. */
+.ap-order-toggle-row td {
+	padding-block: var(--ap-s-2) !important;
+	border-block-end: 1px solid var(--ap-line-soft) !important;
+	white-space: normal !important;
+}
+
+.ap-order-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ap-s-1);
+	padding: 0;
+	border: 0;
+	background: none;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-accent);
+	cursor: pointer;
+}
+
+.ap-order-toggle:hover {
+	color: var(--ap-accent-deep);
+}
+
+.ap-order-toggle .ap-icon {
+	transition: transform var(--ap-dur) var(--ap-ease);
+}
+
+/* ==========================================================================
+   11. Payment methods
+   ========================================================================== */
+
+/* Now a standalone block in the left column rather than a section inside
+   the summary card, so it carries the panel surface itself. */
+.woocommerce-checkout #payment {
+	box-sizing: border-box;
+	max-inline-size: 100%;
+	margin: var(--ap-s-4) 0 0;
+	padding: var(--ap-s-5) var(--ap-s-5) var(--ap-s-3);
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+}
+
+.woocommerce-checkout #payment *,
+.woocommerce-checkout #payment *::before,
+.woocommerce-checkout #payment *::after {
+	box-sizing: border-box;
+}
+
+.woocommerce-checkout #payment ul.payment_methods {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--ap-s-3);
+	inline-size: 100%;
+	max-inline-size: 100%;
+	padding: 0;
+	margin: 0 0 var(--ap-s-4);
+	border: 0;
+	list-style: none;
+}
+
+.woocommerce-checkout #payment ul.payment_methods li.ap-pay {
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: none;
+}
+
+/* Blocksy draws its own radio dot from a ::before on the label, so that has
+   to go as well as the input itself. */
+.woocommerce-checkout #payment ul.payment_methods li input[type='radio'] {
+	display: none !important;
+}
+
+.woocommerce-checkout #payment ul.payment_methods li>label::before,
+.woocommerce-checkout #payment ul.payment_methods li>label::after,
+.ap-pay__tile::before,
+.ap-pay__tile::after {
+	content: none !important;
+	display: none !important;
+}
+
+.ap-pay__tile {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 100%;
+	min-inline-size: 0;
+	block-size: 100%;
+	min-block-size: 68px;
+	padding: var(--ap-s-3);
+	margin: 0;
+	border: 1.5px solid var(--ap-line);
+	border-radius: var(--ap-r-md);
+	background: var(--ap-surface);
+	cursor: pointer;
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease),
+		box-shadow var(--ap-dur) var(--ap-ease);
+}
+
+.ap-pay__tile:hover {
+	border-color: var(--ap-line-strong);
+	background: var(--ap-surface-alt);
+}
+
+.ap-pay__input:checked+.ap-pay__tile {
+	border-color: var(--ap-accent);
+	background: var(--ap-accent-tint);
+}
+
+.ap-pay__input:focus-visible+.ap-pay__tile {
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-pay__logo {
+	display: grid;
+	place-items: center;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+
+/* The gateway name stays in the accessibility tree so the control is
+   labelled, but the tile itself is the logo alone. */
+.ap-pay__name {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	padding: 0;
+	margin: -1px;
+	border: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.ap-pay-icon {
+	display: block;
+	max-block-size: 32px;
+	max-inline-size: 100%;
+	inline-size: auto;
+	block-size: auto;
+	object-fit: contain;
+}
+
+.ap-pay__fields,
+.woocommerce-checkout #payment div.payment_box {
+	display: none !important;
+}
+
+/* Holds only the terms row and the nonce now, so it needs no padding of
+   its own — the leftover bottom space read as an empty box. */
+.woocommerce-checkout #payment .form-row.place-order {
+	padding: 0;
+	margin: 0;
+	min-block-size: 0;
+}
+
+.woocommerce-checkout #payment .form-row.place-order:empty {
+	display: none;
+}
+
+.woocommerce-checkout #place_order {
+	display: block;
+	inline-size: 100%;
+	min-block-size: 52px;
+	border: 0;
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-accent);
+	color: #fff;
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	cursor: pointer;
+	transition: background-color var(--ap-dur) var(--ap-ease);
+}
+
+.woocommerce-checkout #place_order:hover {
+	background: var(--ap-accent-deep);
+}
+
+.woocommerce-privacy-policy-text {
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-faint);
+	display: none;
+}
+
+.woocommerce-checkout-payment .place-order .woocommerce-terms-and-conditions-wrapper {
+	margin-bottom: 0 !important;
+}
+
+.woocommerce-privacy-policy-text a,
+.woocommerce-terms-and-conditions-wrapper a,
+.woocommerce-terms-and-conditions-checkbox-text a {
+	color: var(--ap-accent) !important;
+	font-weight: var(--ap-fw-semibold);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	cursor: pointer;
+}
+
+.woocommerce-privacy-policy-text a:hover,
+.woocommerce-terms-and-conditions-wrapper a:hover,
+.woocommerce-terms-and-conditions-checkbox-text a:hover {
+	color: var(--ap-accent-deep) !important;
+}
+
+/*
+ * "What you pay now vs. on delivery" — printed above the order button by
+ * assurance_checkout_payment_note(). One labelled row per amount, so the
+ * split reads as a statement rather than a sentence with numbers in it.
+ */
+.ap-pay-note {
+	margin: 0 0 var(--ap-s-4);
+	padding: var(--ap-s-4);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-md);
+	background: var(--ap-surface);
+	box-shadow: var(--ap-shadow-xs);
+}
+
+.ap-pay-note__head {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	margin: 0 0 var(--ap-s-3);
+	padding-block-end: var(--ap-s-3);
+	border-block-end: 1px solid var(--ap-line-soft);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-pay-note__head .ap-icon {
+	flex: none;
+	color: var(--ap-accent);
+}
+
+.ap-pay-note__foot {
+	margin: var(--ap-s-3) 0 0;
+	padding-block-start: var(--ap-s-3);
+	border-block-start: 1px solid var(--ap-line-soft);
+	font-size: var(--ap-text-2xs);
+	line-height: var(--ap-lh-normal);
+	color: var(--ap-ink-faint);
+}
+
+.ap-pay-note__row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--ap-s-3);
+	padding-block: var(--ap-s-2);
+	font-size: var(--ap-text-xs);
+	color: var(--ap-ink-muted);
+}
+
+.ap-pay-note__row+.ap-pay-note__row {
+	border-block-start: 1px dashed var(--ap-line-soft);
+}
+
+.ap-pay-note__label {
+	min-inline-size: 0;
+}
+
+.ap-pay-note__amount {
+	flex: none;
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+	white-space: nowrap;
+}
+
+/* The amount actually leaving the shopper's wallet at this step. */
+.ap-pay-note__row.is-now .ap-pay-note__label {
+	color: var(--ap-ink);
+	font-weight: var(--ap-fw-medium);
+}
+
+.ap-pay-note__row.is-now .ap-pay-note__amount {
+	color: var(--ap-accent);
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+}
+
+/* WooCommerce leaves a tall empty .form-row wrapper around the terms block
+   even when no terms checkbox is enabled — that was the dead gap between
+   the privacy line and the pay note. */
+.woocommerce-terms-and-conditions-wrapper {
+	margin: 0 0 var(--ap-s-3);
+}
+
+.woocommerce-terms-and-conditions-wrapper .form-row {
+	margin: 0;
+	padding: var(--ap-s-2);
+	border: 1px solid transparent;
+	border-radius: var(--ap-r-sm);
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease);
+}
+
+.woocommerce-terms-and-conditions-wrapper label.checkbox {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--ap-s-2);
+	margin: 0;
+	font-size: var(--ap-text-xs);
+	line-height: var(--ap-lh-snug);
+	color: var(--ap-ink-soft);
+	cursor: pointer;
+}
+
+.woocommerce-terms-and-conditions-wrapper input#terms {
+	flex: none;
+	inline-size: 18px;
+	block-size: 18px;
+	margin: 0;
+	accent-color: var(--ap-accent);
+	cursor: pointer;
+}
+
+/* Server-side notice is suppressed; the control carries the error. */
+
+.form-row.ap-terms-error input#terms {
+	outline: 2px solid var(--ap-accent);
+	outline-offset: 1px;
+}
+
+.woocommerce-terms-and-conditions-wrapper:empty {
+	display: none;
+}
+
+.woocommerce-checkout #payment .form-row.place-order {
+	margin-block-start: var(--ap-s-3);
+}
+
+/* ==========================================================================
+   12. Assurance strip
+   ========================================================================== */
+
+.ap-assure {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-3);
+	margin: var(--ap-s-4) 0 0;
+	padding: var(--ap-s-4);
+	list-style: none;
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+}
+
+.ap-assure li {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-3);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink-soft);
+}
+
+.ap-assure__icon {
+	display: grid;
+	place-items: center;
+	inline-size: 32px;
+	block-size: 32px;
+	flex: none;
+	border-radius: 50%;
+	background: var(--ap-green-tint);
+}
+
+.ap-assure .ap-icon {
+	color: var(--ap-green);
+	flex: none;
+}
+
+/* Grid rather than wrapping flex: equal tracks keep every icon on a shared
+   left edge once the items break onto a second line. It is a direct child of
+   .ap-checkout__grid, so it is placed into the left column explicitly. */
+.ap-assure--inline {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: var(--ap-s-3) var(--ap-s-4);
+	/* Matches .ap-panel + .ap-panel, so the strip sits on the same rhythm
+	   as the cards stacked above it. */
+	margin-block-start: var(--ap-s-4);
+}
+
+/*
+ * Stacked layout: the left column dissolves so its panels become grid items
+ * in their own right, which is what allows the strip to be ordered past the
+ * summary. It is the least important thing on the page and should not push
+ * the order total down on a phone.
+ */
+@media (max-width: 991px) {
+
+	.ap-checkout .ap-checkout__main {
+		display: contents;
+		position: static;
+	}
+
+	.ap-checkout .ap-checkout__main > * {
+		grid-column: auto;
+		order: 1;
+	}
+
+	.ap-checkout .ap-checkout__side {
+		grid-column: auto;
+		order: 2;
+	}
+
+	.ap-checkout .ap-assure--inline {
+		order: 3;
+		margin-block-start: 0;
+	}
+
+	/* The grid gap now spaces every panel, so their own margins would
+	   double it. */
+	.ap-checkout .ap-checkout__main > .ap-panel + .ap-panel,
+	.ap-checkout .ap-checkout__main > #payment {
+		margin-block-start: 0;
+	}
+}
+
+.ap-assure--inline li {
+	justify-content: flex-start;
+	font-size: var(--ap-text-xs);
+	text-align: start;
+}
+
+@media (max-width: 575px) {
+	.woocommerce-checkout #payment ul.payment_methods {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.woocommerce-checkout #payment {
+		padding: var(--ap-s-4);
+	}
+
+	.ap-assure--inline {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.ap-assure--inline .ap-assure__icon {
+		inline-size: 28px;
+		block-size: 28px;
+	}
+}
+
+/* ==========================================================================
+   16. Checkout modal — privacy policy read in place
+   ========================================================================== */
+
+.ap-modal-root {
+	position: fixed;
+	inset: 0;
+	z-index: var(--ap-z-modal);
+	display: grid;
+	place-items: center;
+	padding: var(--ap-s-5);
+}
+
+.ap-modal-root[hidden] {
+	display: none;
+}
+
+.ap-modal__scrim {
+	position: absolute;
+	inset: 0;
+	background: rgba(15, 31, 61, 0.42);
+	opacity: 0;
+	transition: opacity var(--ap-dur-panel) var(--ap-ease-out);
+}
+
+.ap-modal {
+	position: relative;
+	inline-size: min(560px, 100%);
+	max-block-size: min(80vh, 640px);
+	display: grid;
+	grid-template-rows: auto 1fr;
+	background: var(--ap-paper);
+	border-radius: var(--ap-r-md);
+	box-shadow: var(--ap-shadow-panel);
+	opacity: 0;
+	transform: translateY(12px) scale(0.98);
+	transition:
+		opacity var(--ap-dur-panel) var(--ap-ease-out),
+		transform var(--ap-dur-panel) var(--ap-ease-out);
+}
+
+.ap-modal-root.is-open .ap-modal__scrim {
+	opacity: 1;
+}
+
+.ap-modal-root.is-open .ap-modal {
+	opacity: 1;
+	transform: none;
+}
+
+.ap-modal__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ap-s-3);
+	padding: var(--ap-s-4) var(--ap-s-5);
+	border-block-end: 1px solid var(--ap-line);
+}
+
+.ap-modal__title {
+	margin: 0;
+	font-size: var(--ap-text-md);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-modal__body {
+	overflow-y: auto;
+	padding: var(--ap-s-5);
+	font-size: var(--ap-text-sm);
+	line-height: var(--ap-lh-normal);
+	color: var(--ap-ink-soft);
+}
+
+.ap-modal__body p {
+	margin: 0 0 var(--ap-s-4);
+}
+
+.ap-modal__loading {
+	color: var(--ap-ink-faint);
+	text-align: center;
+}
+
+/* ==========================================================================
+   13. WooCommerce notices
+   ========================================================================== */
+
+.woocommerce-error,
+.woocommerce-info,
+.woocommerce-message {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-3);
+	margin: 0 0 var(--ap-s-5);
+	padding: var(--ap-s-3) var(--ap-s-4);
+	border: 1px solid var(--ap-line);
+	border-inline-start: 3px solid var(--ap-ink);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-size: var(--ap-text-sm);
+	list-style: none;
+}
+
+.woocommerce-error::before,
+.woocommerce-info::before,
+.woocommerce-message::before {
+	display: none;
+}
+
+/*
+ * Colour has to be set on the descendants too, not just the box. The notice
+ * text sits inside <li> (and sometimes <strong>), which inherit Blocksy's
+ * light-on-dark notice colour and rendered white on our tinted background.
+ */
+.woocommerce-error,
+.woocommerce-error li,
+.woocommerce-error strong,
+.woocommerce-error a {
+	color: var(--ap-danger-deep);
+}
+
+.woocommerce-error {
+	border-color: var(--ap-danger);
+	border-inline-start-color: var(--ap-danger);
+	background: var(--ap-danger-tint);
+}
+
+.woocommerce-message,
+.woocommerce-message li,
+.woocommerce-message strong {
+	color: var(--ap-green-deep);
+}
+
+.woocommerce-message {
+	border-color: var(--ap-green);
+	border-inline-start-color: var(--ap-green);
+	background: var(--ap-green-tint);
+}
+
+.woocommerce-info,
+.woocommerce-info li,
+.woocommerce-info strong {
+	color: var(--ap-ink);
+}
+
+.woocommerce-info {
+	border-inline-start-color: var(--ap-accent);
+	background: var(--ap-accent-tint);
+}
+
+.woocommerce-error .button,
+.woocommerce-info .button,
+.woocommerce-message .button {
+	margin-inline-start: auto;
+}
+
+/*
+ * A <ul> notice is a list of separate failures, so it stacks. The flex
+ * layout above is meant for the single-message notices that carry an action
+ * button beside the text; applied to a list it laid every message out in a
+ * row.
+ */
+.woocommerce ul.woocommerce-error,
+.woocommerce ul.woocommerce-message,
+.woocommerce ul.woocommerce-info,
+ul.woocommerce-error,
+ul.woocommerce-message,
+ul.woocommerce-info {
+	display: block;
+}
+
+.woocommerce-error li,
+.woocommerce-message li,
+.woocommerce-info li {
+	display: block;
+	inline-size: 100%;
+}
+
+/* Messages that name a field double as a shortcut to it. */
+.woocommerce-error li.is-linked {
+	padding: 2px 4px;
+	margin-inline-start: -4px;
+	border-radius: var(--ap-r-xs);
+	cursor: pointer;
+	transition: background-color var(--ap-dur) var(--ap-ease);
+}
+
+.woocommerce-error li.is-linked:hover,
+.woocommerce-error li.is-linked:focus-visible {
+	background: rgba(214, 54, 56, 0.10);
+	outline: none;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.woocommerce-error li+li,
+.woocommerce-message li+li {
+	margin-block-start: var(--ap-s-1);
+}
+
+/*
+ * WooCommerce prepends the error list into the form inside this wrapper on a
+ * failed submit. Without a rule of its own it inherited the checkout grid's
+ * layout context and sat flush against the first panel.
+ */
+.woocommerce-NoticeGroup,
+.woocommerce-NoticeGroup-checkout {
+	display: block;
+	inline-size: 100%;
+	margin-block-end: var(--ap-s-5);
+}
+
+.woocommerce-NoticeGroup .woocommerce-error {
+	margin-block-end: 0;
+}
+
+/* ==========================================================================
+   13b. Field-level validation
+   ========================================================================== */
+
+/*
+ * WooCommerce appends this under an invalid field. Unstyled it inherited
+ * body size and colour, so it sat flush against the input and read as help
+ * text rather than an error.
+ */
+.checkout-inline-error-message {
+	display: block;
+	margin: var(--ap-s-2) 0 0;
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-medium);
+	line-height: var(--ap-lh-snug);
+	color: var(--ap-danger);
+}
+
+.woocommerce form .form-row.woocommerce-invalid input.input-text,
+.woocommerce form .form-row.woocommerce-invalid select,
+.woocommerce form .form-row.woocommerce-invalid textarea,
+.ap-checkout .form-row.woocommerce-invalid input,
+.ap-checkout .form-row.woocommerce-invalid select {
+	border-color: var(--ap-danger);
+	background: var(--ap-danger-tint);
+}
+
+.woocommerce form .form-row.woocommerce-invalid input.input-text:focus,
+.woocommerce form .form-row.woocommerce-invalid select:focus,
+.ap-checkout .form-row.woocommerce-invalid input:focus,
+.ap-checkout .form-row.woocommerce-invalid select:focus {
+	border-color: var(--ap-danger);
+	box-shadow: 0 0 0 3px rgba(214, 54, 56, 0.18);
+}
+
+.woocommerce form .form-row.woocommerce-invalid label {
+	color: var(--ap-danger-deep);
+}
+
+.woocommerce form .form-row.woocommerce-validated input.input-text,
+.woocommerce form .form-row.woocommerce-validated select {
+	border-color: var(--ap-green);
+}
+
+.ct-order-review {
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+}
+
+/* ==========================================================================
+   14. Empty cart
+   ========================================================================== */
+
+.woocommerce .cart-empty {
+	font-size: var(--ap-text-md);
+	color: var(--ap-ink);
+	text-align: center;
+}
+
+.woocommerce .return-to-shop {
+	text-align: center;
+	margin-block-start: var(--ap-s-4);
+}
+
+/* ==========================================================================
+   15. Mobile sticky pay bar
+   --------------------------------------------------------------------------
+   The real #place_order button is pinned to the bottom via CSS, not moved
+   via JS — WooCommerce replaces #payment's HTML on every totals AJAX
+   update, which would destroy a JS-relocated node. Pure CSS survives that.
+   ========================================================================== */
+
+.ap-paybar,
+.ap-cartbar {
+	display: none;
+}
+
+/* ==========================================================================
+   17. Cart — mobile pay bar
+   ========================================================================== */
+
+@media (max-width: 991px) {
+	body.woocommerce-cart {
+		padding-block-end: 88px;
+	}
+
+	.ap-cartbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--ap-s-4);
+		position: fixed;
+		inset-inline: 0;
+		inset-block-end: 0;
+		z-index: var(--ap-z-sticky);
+		padding: var(--ap-s-3) var(--ap-s-4) calc(var(--ap-s-3) + env(safe-area-inset-bottom));
+		background: var(--ap-surface);
+		border-block-start: 1px solid var(--ap-line);
+		box-shadow: 0 -8px 24px rgba(15, 31, 61, 0.12);
+	}
+
+	.ap-cartbar__sum {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+		min-inline-size: 0;
+	}
+
+	.ap-cartbar__label {
+		font-size: var(--ap-text-2xs);
+		color: var(--ap-ink-muted);
+	}
+
+	.ap-cartbar__amount {
+		font-size: var(--ap-text-lg);
+		font-weight: var(--ap-fw-bold);
+		color: var(--ap-accent);
+		line-height: 1.1;
+		white-space: nowrap;
+	}
+
+	.ap-cartbar__amount .amount {
+		color: inherit;
+	}
+
+	.ap-cartbar__cta {
+		flex: 0 1 auto;
+		padding-inline: var(--ap-s-6);
+		white-space: nowrap;
+	}
+
+	/* The in-panel checkout button is redundant once the bar is pinned. */
+	.ap-cart__totals .wc-proceed-to-checkout {
+		display: none;
+	}
+}
+
+/* ==========================================================================
+   18. Checkout — mobile pay bar
+   ========================================================================== */
+
+@media (max-width: 767px) {
+	body.woocommerce-checkout {
+		padding-block-end: 132px;
+	}
+
+	/* Reserves the pinned button's height in its own padding so nothing
+	   scrolls through the gap beneath the bar. */
+	.ap-paybar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		position: fixed;
+		inset-inline: 0;
+		inset-block-end: 0;
+		z-index: var(--ap-z-sticky);
+		padding-block-start: var(--ap-s-3);
+		padding-block-end: calc(64px + env(safe-area-inset-bottom));
+		padding-inline: var(--ap-s-4);
+		background: var(--ap-surface);
+		border-block-start: 1px solid var(--ap-line);
+		box-shadow: 0 -8px 24px rgba(15, 31, 61, 0.12);
+	}
+
+	.ap-paybar__label {
+		font-size: var(--ap-text-xs);
+		color: var(--ap-ink-muted);
+	}
+
+	.ap-paybar__amount {
+		font-size: var(--ap-text-lg);
+		font-weight: var(--ap-fw-bold);
+		color: var(--ap-accent);
+	}
+
+	/* Only the button is pinned; the breakdown stays in the page flow. */
+	.woocommerce-checkout .ap-order-actions {
+		margin-block-start: var(--ap-s-3);
+	}
+
+	.woocommerce-checkout .ap-summary .ap-panel__body {
+		padding-block-end: var(--ap-s-3);
+	}
+
+	/* The button is now inside the summary panel, which clips its overflow.
+	   A fixed child is only clipped when an ancestor establishes the
+	   containing block, but this keeps it out of reach of that entirely. */
+	.woocommerce-checkout .ap-summary,
+	.woocommerce-checkout .ap-summary .ap-panel__body {
+		overflow: visible;
+	}
+
+	.woocommerce-checkout #place_order {
+		position: fixed;
+		inset-inline: var(--ap-s-4);
+		inset-block-end: calc(var(--ap-s-3) + env(safe-area-inset-bottom));
+		z-index: calc(var(--ap-z-sticky) + 1);
+		inline-size: auto;
+		min-block-size: 52px;
+	}
+
+	.woocommerce-privacy-policy-text,
+	.ap-pay-note {
+		position: static;
+	}
+}
+
+/* ==========================================================================
+   19. Order actions relocated under the total (desktop)
+   ========================================================================== */
+
+.ap-order-actions {
+	margin-block-start: var(--ap-s-3);
+}
+
+.ap-order-actions .ap-pay-note {
+	margin-block-end: var(--ap-s-3);
+}

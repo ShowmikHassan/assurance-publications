@@ -1,0 +1,344 @@
+/**
+ * Assurance Publications — Contact page
+ * ======================================
+ * Loaded only on the contact page (see inc/setup.php).
+ */
+
+/* ==========================================================================
+   1. Hero
+   ========================================================================== */
+
+.ap-contact-hero {
+	background: var(--ap-gradient-navy);
+	padding-block: var(--ap-s-16) var(--ap-s-12);
+}
+
+.ap-contact-hero__inner {
+	max-width: 42rem;
+	text-align: center;
+	margin-inline: auto;
+}
+
+.ap-contact-hero .ap-eyebrow {
+	color: var(--ap-accent-soft);
+	justify-content: center;
+}
+
+.ap-contact-hero__title {
+	color: #fff;
+	font-size: clamp(1.6rem, 3.6vw, var(--ap-text-2xl));
+	margin: 0 0 var(--ap-s-3);
+}
+
+.ap-contact-hero__sub {
+	color: rgba(245, 247, 250, 0.8);
+	line-height: var(--ap-lh-loose);
+	margin: 0;
+}
+
+/* ==========================================================================
+   2. Body grid — info cards + form
+   ========================================================================== */
+
+.ap-contact-grid {
+	display: grid;
+	grid-template-columns: 0.85fr 1.15fr;
+	gap: var(--ap-s-8);
+	align-items: start;
+}
+
+.ap-contact-info {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-4);
+}
+
+.ap-contact-card {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--ap-s-4);
+	padding: var(--ap-s-5);
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	text-decoration: none;
+	color: inherit;
+	transition: border-color var(--ap-dur) var(--ap-ease), box-shadow var(--ap-dur) var(--ap-ease), transform var(--ap-dur) var(--ap-ease);
+}
+
+a.ap-contact-card:hover {
+	border-color: var(--ap-accent);
+	box-shadow: var(--ap-shadow-sm);
+	transform: translateY(-1px);
+}
+
+.ap-contact-card__icon {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 44px;
+	block-size: 44px;
+	border-radius: var(--ap-r-md);
+	background: var(--ap-accent-tint);
+	color: var(--ap-accent);
+}
+
+.ap-contact-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.ap-contact-card__label {
+	font-size: var(--ap-text-xs);
+	color: var(--ap-ink-muted);
+	font-weight: var(--ap-fw-semibold);
+	text-transform: uppercase;
+	letter-spacing: var(--ap-track-eyebrow);
+}
+
+.ap-contact-card__value {
+	font-size: var(--ap-text-base);
+	color: var(--ap-ink);
+	font-weight: var(--ap-fw-medium);
+	line-height: var(--ap-lh-snug);
+}
+
+/* ==========================================================================
+   3. Form
+   ========================================================================== */
+
+.ap-contact-form {
+	background: var(--ap-surface);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-lg);
+	padding: var(--ap-s-8);
+	box-shadow: var(--ap-shadow-sm);
+}
+
+.ap-contact-form__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--ap-s-4);
+}
+
+.ap-field {
+	margin-block-end: var(--ap-s-4);
+}
+
+.ap-field:last-of-type {
+	margin-block-end: 0;
+}
+
+.ap-field__label {
+	display: block;
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+	color: var(--ap-ink-soft);
+	margin-block-end: var(--ap-s-1);
+}
+
+.ap-field__input {
+	inline-size: 100%;
+	min-block-size: var(--ap-control-h);
+	padding-inline: var(--ap-s-4);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	font-family: var(--ap-font);
+	font-size: var(--ap-text-base);
+	color: var(--ap-ink);
+	transition: border-color var(--ap-dur) var(--ap-ease), box-shadow var(--ap-dur) var(--ap-ease);
+}
+
+.ap-field__input:focus {
+	outline: none;
+	border-color: var(--ap-accent);
+	box-shadow: var(--ap-ring-focus);
+}
+
+.ap-field__input--textarea {
+	inline-size: 100%;
+	padding-block: var(--ap-s-3);
+	resize: vertical;
+	min-block-size: 110px;
+}
+
+.ap-field.has-error .ap-field__input {
+	border-color: #c0392b;
+}
+
+/* Reserved a blank line under every input even when valid, which read as a
+   dead gap between the fields. It now only takes space when it has text. */
+.ap-field__error {
+	display: block;
+	margin-block-start: var(--ap-s-1);
+	font-size: var(--ap-text-xs);
+	line-height: var(--ap-lh-snug);
+	color: #c0392b;
+}
+
+.ap-field__error:empty {
+	display: none;
+}
+
+.ap-field--honeypot {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	margin: 0;
+}
+
+.ap-contact-form__status {
+	margin: 0 0 var(--ap-s-4);
+	padding: var(--ap-s-3) var(--ap-s-4);
+	border-radius: var(--ap-r-sm);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-medium);
+}
+
+.ap-contact-form__status[data-state='success'] {
+	background: var(--ap-green-tint);
+	color: var(--ap-green-deep);
+}
+
+.ap-contact-form__status[data-state='error'] {
+	background: #fdecea;
+	color: #c0392b;
+}
+
+.ap-contact-form__submit {
+	margin-block-start: var(--ap-s-2);
+}
+
+@media (max-width: 900px) {
+	.ap-contact-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 575px) {
+	.ap-contact-form__row {
+		grid-template-columns: 1fr;
+	}
+
+	.ap-contact-form {
+		padding: var(--ap-s-5);
+	}
+}
+
+/* ==========================================================================
+   4. Map
+   ========================================================================== */
+
+.ap-contact-map {
+	line-height: 0;
+	border-block-start: 1px solid var(--ap-line-soft);
+}
+
+.ap-contact-map iframe {
+	display: block;
+	filter: grayscale(0.15) contrast(1.02);
+}
+/* ==========================================================================
+   Social links
+   ========================================================================== */
+
+.ap-social {
+	margin-block-start: var(--ap-s-4);
+	padding: var(--ap-s-5);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-md);
+	background: var(--ap-surface);
+}
+
+.ap-social__title {
+	display: block;
+	margin-block-end: var(--ap-s-3);
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-bold);
+	color: var(--ap-ink);
+}
+
+.ap-social__list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ap-s-2);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ap-social__link {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-3);
+	padding: var(--ap-s-3);
+	border: 1px solid var(--ap-line-soft);
+	border-radius: var(--ap-r-sm);
+	background: var(--ap-surface);
+	text-decoration: none;
+	transition:
+		border-color var(--ap-dur) var(--ap-ease),
+		background-color var(--ap-dur) var(--ap-ease),
+		transform var(--ap-dur) var(--ap-ease);
+}
+
+.ap-social__link:hover {
+	border-color: var(--ap-line);
+	background: var(--ap-paper-sunk);
+	transform: translateX(2px);
+}
+
+.ap-social__icon {
+	display: grid;
+	place-items: center;
+	inline-size: 38px;
+	block-size: 38px;
+	flex: none;
+	border-radius: var(--ap-r-sm);
+	color: #fff;
+}
+
+/* Brand grounds — the one place the site uses colours it does not own. */
+.ap-social__link--fb .ap-social__icon {
+	background: #1877f2;
+}
+
+.ap-social__link--wa .ap-social__icon {
+	background: #25d366;
+}
+
+.ap-social__text {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-inline-size: 0;
+	flex: 1;
+}
+
+.ap-social__label {
+	font-size: var(--ap-text-sm);
+	font-weight: var(--ap-fw-semibold);
+	color: var(--ap-ink);
+}
+
+.ap-social__meta {
+	font-size: var(--ap-text-2xs);
+	color: var(--ap-ink-muted);
+}
+
+.ap-social__go {
+	flex: none;
+	color: var(--ap-ink-faint);
+	transition: color var(--ap-dur) var(--ap-ease);
+}
+
+.ap-social__link:hover .ap-social__go {
+	color: var(--ap-accent);
+}
