@@ -67,7 +67,10 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 				array(
 					'show_sku'      => $sent_to_admin,
 					'show_image'    => true,
-					'image_size'    => array( 48, 64 ),
+					// A registered crop, not an array: an unregistered array
+					// size falls back to the square 150x150 `thumbnail` file
+					// and squashes portrait covers. See email-order-items.php.
+					'image_size'    => 'assurance-cover-sm',
 					'plain_text'    => $plain_text,
 					'sent_to_admin' => $sent_to_admin,
 				)

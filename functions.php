@@ -64,4 +64,5 @@ if ( class_exists( 'WooCommerce' ) ) {
 	assurance_load( 'shipping' );       // Inside/Outside Dhaka rates.
 	assurance_load( 'read-later' );     // "একটু পরে দেখুন" list.
 	assurance_load( 'emails' );         // Transactional email copy + invoice.
+	assurance_load( 'pdf-invoice' );    // Bengali font for the mPDF invoice.
 }

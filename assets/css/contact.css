@@ -44,13 +44,14 @@
 	display: grid;
 	grid-template-columns: 0.85fr 1.15fr;
 	gap: var(--ap-s-8);
-	align-items: start;
+	align-items: stretch;
 }
 
 .ap-contact-info {
 	display: flex;
 	flex-direction: column;
 	gap: var(--ap-s-4);
+	justify-content: space-between;
 }
 
 .ap-contact-card {
@@ -111,6 +112,9 @@ a.ap-contact-card:hover {
    ========================================================================== */
 
 .ap-contact-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	background: var(--ap-surface);
 	border: 1px solid var(--ap-line-soft);
 	border-radius: var(--ap-r-lg);
@@ -247,98 +251,59 @@ a.ap-contact-card:hover {
 }
 /* ==========================================================================
    Social links
+   --------------------------------------------------------------------------
+   Reuses .ap-contact-card as its shell (same padding/border/radius/height
+   family as the address, phone, email and hours cards above it) rather than
+   a bespoke tall block — this is meant to read as a 5th card, not a
+   separate section.
    ========================================================================== */
 
-.ap-social {
-	margin-block-start: var(--ap-s-4);
-	padding: var(--ap-s-5);
-	border: 1px solid var(--ap-line-soft);
-	border-radius: var(--ap-r-md);
-	background: var(--ap-surface);
-}
-
-.ap-social__title {
-	display: block;
-	margin-block-end: var(--ap-s-3);
-	font-size: var(--ap-text-sm);
-	font-weight: var(--ap-fw-bold);
-	color: var(--ap-ink);
-}
-
-.ap-social__list {
-	display: flex;
+.ap-contact-card--social {
 	flex-direction: column;
-	gap: var(--ap-s-2);
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.ap-social__link {
-	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	gap: var(--ap-s-3);
-	padding: var(--ap-s-3);
-	border: 1px solid var(--ap-line-soft);
+}
+
+.ap-social-row {
+	display: flex;
+	gap: var(--ap-s-2);
+	flex-wrap: wrap;
+}
+
+.ap-social-row__link {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	padding: var(--ap-s-2) var(--ap-s-3);
 	border-radius: var(--ap-r-sm);
-	background: var(--ap-surface);
+	background: var(--ap-accent-tint);
+	color: var(--ap-ink);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
 	text-decoration: none;
-	transition:
-		border-color var(--ap-dur) var(--ap-ease),
-		background-color var(--ap-dur) var(--ap-ease),
-		transform var(--ap-dur) var(--ap-ease);
+	white-space: nowrap;
+	transition: background-color var(--ap-dur) var(--ap-ease);
 }
 
-.ap-social__link:hover {
-	border-color: var(--ap-line);
+.ap-social-row__link:hover {
 	background: var(--ap-paper-sunk);
-	transform: translateX(2px);
 }
 
-.ap-social__icon {
-	display: grid;
-	place-items: center;
-	inline-size: 38px;
-	block-size: 38px;
-	flex: none;
-	border-radius: var(--ap-r-sm);
+.ap-social-row__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 22px;
+	block-size: 22px;
+	border-radius: 50%;
 	color: #fff;
 }
 
 /* Brand grounds — the one place the site uses colours it does not own. */
-.ap-social__link--fb .ap-social__icon {
+.ap-social-row__link--fb .ap-social-row__icon {
 	background: #1877f2;
 }
 
-.ap-social__link--wa .ap-social__icon {
+.ap-social-row__link--wa .ap-social-row__icon {
 	background: #25d366;
-}
-
-.ap-social__text {
-	display: flex;
-	flex-direction: column;
-	gap: 1px;
-	min-inline-size: 0;
-	flex: 1;
-}
-
-.ap-social__label {
-	font-size: var(--ap-text-sm);
-	font-weight: var(--ap-fw-semibold);
-	color: var(--ap-ink);
-}
-
-.ap-social__meta {
-	font-size: var(--ap-text-2xs);
-	color: var(--ap-ink-muted);
-}
-
-.ap-social__go {
-	flex: none;
-	color: var(--ap-ink-faint);
-	transition: color var(--ap-dur) var(--ap-ease);
-}
-
-.ap-social__link:hover .ap-social__go {
-	color: var(--ap-accent);
 }

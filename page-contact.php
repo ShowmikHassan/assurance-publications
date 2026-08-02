@@ -62,43 +62,25 @@ get_header();
 					</span>
 				</div>
 
-				<div class="ap-social">
-					<strong class="ap-social__title"><?php esc_html_e( 'আমাদের সাথে যুক্ত থাকুন', 'assurance' ); ?></strong>
+				<div class="ap-contact-card ap-contact-card--social">
+					<strong class="ap-contact-card__label"><?php esc_html_e( 'আমাদের সাথে যুক্ত থাকুন', 'assurance' ); ?></strong>
 
-					<ul class="ap-social__list">
-						<li>
-							<a class="ap-social__link ap-social__link--fb" href="https://www.facebook.com/share/14jUBkCDSaj/" target="_blank" rel="noopener noreferrer">
-								<span class="ap-social__icon" aria-hidden="true"><?php assurance_the_icon( 'facebook', array( 'size' => 18 ) ); ?></span>
-								<span class="ap-social__text">
-									<span class="ap-social__label"><?php esc_html_e( 'ফেসবুক পেজ', 'assurance' ); ?></span>
-									<span class="ap-social__meta"><?php esc_html_e( 'নতুন বইয়ের খবর পান', 'assurance' ); ?></span>
-								</span>
-								<?php assurance_the_icon( 'arrow-right', array( 'size' => 15, 'class' => 'ap-social__go' ) ); ?>
-							</a>
-						</li>
+					<div class="ap-social-row">
+						<a class="ap-social-row__link ap-social-row__link--fb" href="https://www.facebook.com/share/14jUBkCDSaj/" target="_blank" rel="noopener noreferrer">
+							<span class="ap-social-row__icon" aria-hidden="true"><?php assurance_the_icon( 'facebook', array( 'size' => 16 ) ); ?></span>
+							<?php esc_html_e( 'পেজ', 'assurance' ); ?>
+						</a>
 
-						<li>
-							<a class="ap-social__link ap-social__link--fb" href="https://www.facebook.com/share/g/1LxpKgBQZq/" target="_blank" rel="noopener noreferrer">
-								<span class="ap-social__icon" aria-hidden="true"><?php assurance_the_icon( 'facebook-group', array( 'size' => 18 ) ); ?></span>
-								<span class="ap-social__text">
-									<span class="ap-social__label"><?php esc_html_e( 'ফেসবুক গ্রুপ', 'assurance' ); ?></span>
-									<span class="ap-social__meta"><?php esc_html_e( 'পাঠকদের সাথে আলোচনা করুন', 'assurance' ); ?></span>
-								</span>
-								<?php assurance_the_icon( 'arrow-right', array( 'size' => 15, 'class' => 'ap-social__go' ) ); ?>
-							</a>
-						</li>
+						<a class="ap-social-row__link ap-social-row__link--fb" href="https://www.facebook.com/share/g/1LxpKgBQZq/" target="_blank" rel="noopener noreferrer">
+							<span class="ap-social-row__icon" aria-hidden="true"><?php assurance_the_icon( 'facebook-group', array( 'size' => 16 ) ); ?></span>
+							<?php esc_html_e( 'গ্রুপ', 'assurance' ); ?>
+						</a>
 
-						<li>
-							<a class="ap-social__link ap-social__link--wa" href="https://wa.me/8801341875192" target="_blank" rel="noopener noreferrer">
-								<span class="ap-social__icon" aria-hidden="true"><?php assurance_the_icon( 'whatsapp', array( 'size' => 18 ) ); ?></span>
-								<span class="ap-social__text">
-									<span class="ap-social__label"><?php esc_html_e( 'হোয়াটসঅ্যাপ', 'assurance' ); ?></span>
-									<span class="ap-social__meta"><?php esc_html_e( 'দ্রুত উত্তর পেতে মেসেজ দিন', 'assurance' ); ?></span>
-								</span>
-								<?php assurance_the_icon( 'arrow-right', array( 'size' => 15, 'class' => 'ap-social__go' ) ); ?>
-							</a>
-						</li>
-					</ul>
+						<a class="ap-social-row__link ap-social-row__link--wa" href="https://wa.me/8801341875192" target="_blank" rel="noopener noreferrer">
+							<span class="ap-social-row__icon" aria-hidden="true"><?php assurance_the_icon( 'whatsapp', array( 'size' => 16 ) ); ?></span>
+							<?php esc_html_e( 'হোয়াটসঅ্যাপ', 'assurance' ); ?>
+						</a>
+					</div>
 				</div>
 			</div>
 

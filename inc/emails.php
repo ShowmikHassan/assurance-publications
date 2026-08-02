@@ -228,13 +228,13 @@ function assurance_email_payment_lines( $order ) {
 				'tone'  => 'paid',
 			);
 			$lines[] = array(
-				'label' => __( 'ডেলিভারিতে ক্যাশে দিতে হবে', 'assurance' ),
+				'label' => __( 'ডেলিভারির সময় পরিশোধ করতে হবে', 'assurance' ),
 				'value' => wc_price( max( 0, $total - $fee ), array( 'currency' => $order->get_currency() ) ),
 				'tone'  => 'due',
 			);
 		} else {
 			$lines[] = array(
-				'label' => __( 'ডেলিভারিতে ক্যাশে দিতে হবে', 'assurance' ),
+				'label' => __( 'ডেলিভারির সময় পরিশোধ করতে হবে', 'assurance' ),
 				'value' => wc_price( $total, array( 'currency' => $order->get_currency() ) ),
 				'tone'  => 'due',
 			);

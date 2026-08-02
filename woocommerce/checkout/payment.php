@@ -23,6 +23,7 @@ if ( ! wp_doing_ajax() ) {
 ?>
 <div id="payment" class="woocommerce-checkout-payment">
 	<?php if ( WC()->cart && WC()->cart->needs_payment() ) : ?>
+		<h2 class="ap-panel__title ap-pay-methods__heading"><?php esc_html_e( 'পেমেন্ট অপশন', 'assurance' ); ?></h2>
 		<ul class="wc_payment_methods payment_methods methods ap-pay-methods">
 			<?php
 			if ( ! empty( $available_gateways ) ) {

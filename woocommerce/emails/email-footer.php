@@ -8,15 +8,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$palette     = assurance_email_palette();
-$font        = assurance_email_font();
+$palette = assurance_email_palette();
+$font    = assurance_email_font();
 /*
- * Run the option through WooCommerce's own filter rather than printing it
- * raw: that is where {site_title}, {store_address} and friends are swapped
- * for real values (WC_Emails::replace_placeholders). Reading the option
- * directly printed the placeholders verbatim.
+ * WooCommerce's "Footer text" setting is deliberately not printed here.
+ * It ships defaulted to `{site_title}<br />{store_address}`, which resolves
+ * to exactly the store name and street the structured block below already
+ * prints from the same options — so every email carried the name and address
+ * twice, the first copy being the less complete of the two (it omits
+ * store_address_2 and the city). The block below is this theme's footer of
+ * record; extra footer copy belongs in it, not in a free-text option above it.
  */
-$footer_text = apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) );
 $store_phone = get_option( 'woocommerce_store_phone' );
 $store_email = assurance_shop_contact_email();
 $address     = trim( get_option( 'woocommerce_store_address' ) . ' ' . get_option( 'woocommerce_store_address_2' ) );
@@ -28,12 +30,6 @@ $city        = get_option( 'woocommerce_store_city' );
 					<!-- Footer -->
 					<tr>
 						<td id="template_footer" style="padding:24px 34px 28px; background-color:<?php echo esc_attr( $palette['surface_alt'] ); ?>; border-top:1px solid <?php echo esc_attr( $palette['line'] ); ?>;">
-
-							<?php if ( $footer_text ) : ?>
-								<p style="margin:0 0 14px; font-family:<?php echo esc_attr( $font ); ?>; font-size:13px; line-height:1.7; color:<?php echo esc_attr( $palette['ink_muted'] ); ?>;">
-									<?php echo wp_kses_post( wpautop( wptexturize( $footer_text ) ) ); ?>
-								</p>
-							<?php endif; ?>
 
 							<p style="margin:0 0 4px; font-family:<?php echo esc_attr( $font ); ?>; font-size:13px; line-height:1.7; color:<?php echo esc_attr( $palette['ink'] ); ?>; font-weight:700;">
 								<?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?>

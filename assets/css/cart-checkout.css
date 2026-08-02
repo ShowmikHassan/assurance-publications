@@ -1236,6 +1236,10 @@ body.admin-bar .ap-checkout .ap-checkout__main {
 	box-sizing: border-box;
 }
 
+.ap-pay-methods__heading {
+	margin: 0 0 var(--ap-s-4);
+}
+
 .woocommerce-checkout #payment ul.payment_methods {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1397,11 +1401,6 @@ body.admin-bar .ap-checkout .ap-checkout__main {
 	color: var(--ap-accent-deep) !important;
 }
 
-/*
- * "What you pay now vs. on delivery" — printed above the order button by
- * assurance_checkout_payment_note(). One labelled row per amount, so the
- * split reads as a statement rather than a sentence with numbers in it.
- */
 .ap-pay-note {
 	margin: 0 0 var(--ap-s-4);
 	padding: var(--ap-s-4);
@@ -1475,9 +1474,6 @@ body.admin-bar .ap-checkout .ap-checkout__main {
 	font-weight: var(--ap-fw-bold);
 }
 
-/* WooCommerce leaves a tall empty .form-row wrapper around the terms block
-   even when no terms checkbox is enabled — that was the dead gap between
-   the privacy line and the pay note. */
 .woocommerce-terms-and-conditions-wrapper {
 	margin: 0 0 var(--ap-s-3);
 }
@@ -1494,13 +1490,21 @@ body.admin-bar .ap-checkout .ap-checkout__main {
 
 .woocommerce-terms-and-conditions-wrapper label.checkbox {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: var(--ap-s-2);
 	margin: 0;
 	font-size: var(--ap-text-xs);
 	line-height: var(--ap-lh-snug);
 	color: var(--ap-ink-soft);
 	cursor: pointer;
+}
+
+.woocommerce-terms-and-conditions-checkbox-text {
+	margin-top: 7px;
+}
+
+.woocommerce-terms-and-conditions-wrapper .form-row label.checkbox {
+	margin-block-end: 0;
 }
 
 .woocommerce-terms-and-conditions-wrapper input#terms {
@@ -1592,7 +1596,7 @@ body.admin-bar .ap-checkout .ap-checkout__main {
 		position: static;
 	}
 
-	.ap-checkout .ap-checkout__main > * {
+	.ap-checkout .ap-checkout__main>* {
 		grid-column: auto;
 		order: 1;
 	}
@@ -1609,8 +1613,8 @@ body.admin-bar .ap-checkout .ap-checkout__main {
 
 	/* The grid gap now spaces every panel, so their own margins would
 	   double it. */
-	.ap-checkout .ap-checkout__main > .ap-panel + .ap-panel,
-	.ap-checkout .ap-checkout__main > #payment {
+	.ap-checkout .ap-checkout__main>.ap-panel+.ap-panel,
+	.ap-checkout .ap-checkout__main>#payment {
 		margin-block-start: 0;
 	}
 }
@@ -2074,4 +2078,27 @@ ul.woocommerce-info {
 
 .ap-order-actions .ap-pay-note {
 	margin-block-end: var(--ap-s-3);
+}
+
+/* ==========================================================================
+   20. Thank-you page actions
+   --------------------------------------------------------------------------
+   The order-received screen inherits checkout's hidden header and footer, so
+   these are the only links off the page. Given that, they get a separator and
+   real breathing room rather than sitting flush under the invoice block.
+   ========================================================================== */
+
+.ap-thankyou-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ap-s-3);
+	margin-block-start: var(--ap-s-6);
+	padding-block-start: var(--ap-s-5);
+	border-block-start: 1px solid var(--ap-line-soft);
+}
+
+@media (max-width: 575px) {
+	.ap-thankyou-actions .ap-btn {
+		flex: 1 1 100%;
+	}
 }

@@ -617,6 +617,37 @@ function assurance_checkout_brand_bar() {
 add_action( 'woocommerce_before_checkout_form', 'assurance_checkout_brand_bar', 0 );
 
 /**
+ * A way off the order-received screen.
+ *
+ * is_checkout() is true on the thank-you endpoint too, so the header and
+ * footer are both suppressed there by assurance_checkout_hide_chrome() —
+ * and the branded top bar above only runs on woocommerce_before_checkout_form,
+ * which the thank-you template never fires. The result is a page with no
+ * link off it at all once the order is placed.
+ *
+ * Priority 30 puts this after the order table (woocommerce_thankyou, 10) and
+ * the invoice block that hangs off it at 20, so it reads as the last step.
+ * Hooking woocommerce_thankyou rather than the shared order-details action
+ * keeps it off the My Account order view, which has its own navigation.
+ *
+ * @param int $order_id Order ID.
+ */
+function assurance_thankyou_home_action( $order_id ) {
+	if ( ! $order_id ) {
+		return;
+	}
+	?>
+	<div class="ap-thankyou-actions">
+		<a class="ap-btn ap-btn--primary" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<?php assurance_the_icon( 'chevron-left', array( 'size' => 18 ) ); ?>
+			<?php esc_html_e( 'হোমপেজে ফিরে যান', 'assurance' ); ?>
+		</a>
+	</div>
+	<?php
+}
+add_action( 'woocommerce_thankyou', 'assurance_thankyou_home_action', 30 );
+
+/**
  * Validate the mobile number.
  *
  * Bangladeshi mobiles are 11 digits starting 013–019, optionally written

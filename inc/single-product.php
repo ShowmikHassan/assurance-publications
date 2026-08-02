@@ -50,7 +50,7 @@ add_filter( 'woocommerce_quantity_input_html', 'assurance_quantity_input', 10, 3
 function assurance_single_buy_now() {
 	global $product;
 
-	if ( ! $product instanceof WC_Product || ! $product->is_purchasable() ) {
+	if ( ! $product instanceof WC_Product || ! $product->is_purchasable() || ! $product->is_in_stock() ) {
 		return;
 	}
 	?>
