@@ -140,7 +140,6 @@
 	padding: var(--ap-s-12) var(--ap-s-8);
 	box-shadow: var(--ap-shadow-lg);
 	inline-size: 100%;
-	max-inline-size: 280px;
 }
 
 .ap-about-story__badge .ap-icon {

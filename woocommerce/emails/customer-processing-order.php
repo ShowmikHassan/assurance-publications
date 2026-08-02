@@ -3,7 +3,7 @@
  * Customer email: order received and confirmed.
  *
  * @package Assurance
- * @version 9.8.0 (base)
+ * @version 10.4.0
  */
 
 defined( 'ABSPATH' ) || exit;

@@ -239,6 +239,37 @@ function assurance_preload_fonts() {
 add_action( 'wp_head', 'assurance_preload_fonts', 1 );
 
 /**
+ * Organization structured data, for the logo in Google search results.
+
+function assurance_organization_schema() {
+	$logo_id = get_theme_mod( 'custom_logo' );
+
+	if ( ! $logo_id ) {
+		return;
+	}
+
+	$logo_url = wp_get_attachment_image_url( $logo_id, 'full' );
+
+	if ( ! $logo_url ) {
+		return;
+	}
+
+	$schema = array(
+		'@context' => 'https://schema.org',
+		'@type'    => 'Organization',
+		'name'     => get_bloginfo( 'name' ),
+		'url'      => home_url( '/' ),
+		'logo'     => $logo_url,
+	);
+
+	printf(
+		'<script type="application/ld+json">%s</script>' . "\n",
+		wp_json_encode( $schema )
+	);
+}
+add_action( 'wp_head', 'assurance_organization_schema', 5 );
+
+/**
  * Theme supports.
  *
  * Blocksy already declares woocommerce and the gallery features; we only
@@ -324,3 +355,30 @@ function assurance_body_class( $classes ) {
 	return $classes;
 }
 add_filter( 'body_class', 'assurance_body_class' );
+
+/**
+ * Bengali text for Blocksy's own pagination/infinite-scroll strings.
+ *
+ * WooCommerce ships a bn_BD language pack (wp-content/languages/plugins),
+ * but Blocksy does not — there is no blocksy-bn_BD.mo anywhere on this
+ * install, so every string in inc/components/pagination.php falls back to
+ * English no matter how the rest of the site is set up. Overriding the
+ * handful that are actually user-visible here rather than chasing down a
+ * full third-party language pack for one theme's pagination component.
+ *
+ * @param string $translation Translated text.
+ * @param string $text        Original (English) text.
+ * @return string
+ */
+function assurance_translate_blocksy_strings( $translation, $text ) {
+	$strings = array(
+		'No more products to load' => 'আর কোনো পণ্য নেই',
+		'No more posts to load'    => 'আর কোনো পোস্ট নেই',
+		'Load More'                => 'আরও দেখুন',
+		'Prev'                     => 'পূর্ববর্তী',
+		'Next'                     => 'পরবর্তী',
+	);
+
+	return isset( $strings[ $text ] ) ? $strings[ $text ] : $translation;
+}
+add_filter( 'gettext_blocksy', 'assurance_translate_blocksy_strings', 10, 2 );

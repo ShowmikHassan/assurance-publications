@@ -13,7 +13,7 @@
  * also renaming the field everywhere else it appears.
  *
  * @package Assurance
- * @version 9.7.0 (base)
+ * @version 9.7.0
  */
 
 defined( 'ABSPATH' ) || exit;

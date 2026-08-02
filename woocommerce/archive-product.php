@@ -7,6 +7,7 @@
  * in the Customizer rather than a hardcoded max-width here.
  *
  * @package Assurance
+ * @version 8.6.0
  */
 
 defined( 'ABSPATH' ) || exit;

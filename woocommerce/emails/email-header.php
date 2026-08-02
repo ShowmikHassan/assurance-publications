@@ -7,7 +7,7 @@
  * inliner using email-styles.php, so classes there reach Outlook too.
  *
  * @package Assurance
- * @version 9.8.0 (base)
+ * @version 10.7.0
  */
 
 defined( 'ABSPATH' ) || exit;

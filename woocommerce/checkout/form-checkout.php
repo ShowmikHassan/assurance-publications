@@ -7,6 +7,7 @@
  * first, so a mobile shopper confirms what they are buying before typing.
  *
  * @package Assurance
+ * @version 9.4.0
  */
 
 defined( 'ABSPATH' ) || exit;

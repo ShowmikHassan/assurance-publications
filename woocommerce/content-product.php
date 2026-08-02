@@ -13,6 +13,7 @@
  * plugins select on them.
  *
  * @package Assurance
+ * @version 9.4.0
  */
 
 defined( 'ABSPATH' ) || exit;

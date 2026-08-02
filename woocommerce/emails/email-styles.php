@@ -7,7 +7,7 @@
  * to style the order tables that core builds for us.
  *
  * @package Assurance
- * @version 9.8.0 (base)
+ * @version 10.8.0
  */
 
 defined( 'ABSPATH' ) || exit;

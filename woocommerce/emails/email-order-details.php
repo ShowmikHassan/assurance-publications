@@ -8,7 +8,7 @@
  * flow makes essential.
  *
  * @package Assurance
- * @version 9.8.0 (base)
+ * @version 10.8.0
  */
 
 defined( 'ABSPATH' ) || exit;

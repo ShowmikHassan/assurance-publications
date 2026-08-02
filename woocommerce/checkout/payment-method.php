@@ -8,7 +8,7 @@
  * wrapper so a gateway that declares has_fields can bootstrap itself.
  *
  * @package Assurance
- * @version 3.5.0 (base)
+ * @version 3.5.0
  */
 
 defined( 'ABSPATH' ) || exit;

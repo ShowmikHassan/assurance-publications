@@ -3,7 +3,7 @@
  * Admin email: an order was cancelled.
  *
  * @package Assurance
- * @version 9.8.0 (base)
+ * @version 9.8.0
  */
 
 defined( 'ABSPATH' ) || exit;

@@ -3,7 +3,7 @@
  * Customer email: order details / invoice, sent manually from admin.
  *
  * @package Assurance
- * @version 9.8.0 (base)
+ * @version 10.4.0
  */
 
 defined( 'ABSPATH' ) || exit;

@@ -22,7 +22,7 @@
  * SKU on admin copies, and the purchase-note row.
  *
  * @package Assurance
- * @version 10.8.0 (base)
+ * @version 10.8.0
  */
 
 defined( 'ABSPATH' ) || exit;

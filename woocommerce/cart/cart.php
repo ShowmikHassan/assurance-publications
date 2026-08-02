@@ -10,6 +10,7 @@
  * drawer, so the two views cannot disagree.
  *
  * @package Assurance
+ * @version 10.8.0
  */
 
 defined( 'ABSPATH' ) || exit;

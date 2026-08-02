@@ -10,6 +10,7 @@
  * inc/checkout.php and any plugin filtering still applies.
  *
  * @package Assurance
+ * @version 3.6.0
  */
 
 defined( 'ABSPATH' ) || exit;

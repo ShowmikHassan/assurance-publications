@@ -19,6 +19,7 @@
  * shipping step (courier pickers, delivery-date fields) still fire.
  *
  * @package Assurance
+ * @version 3.6.0
  */
 
 defined( 'ABSPATH' ) || exit;

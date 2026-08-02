@@ -7,7 +7,7 @@
  * Bangla because WooCommerce stores it as a BD-xx code.
  *
  * @package Assurance
- * @version 9.8.0 (base)
+ * @version 10.6.0
  */
 
 defined( 'ABSPATH' ) || exit;
