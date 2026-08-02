@@ -149,6 +149,7 @@
 
 .ap-cover {
 	position: relative;
+	z-index: 2;
 	display: block;
 	inline-size: 100%;
 	max-inline-size: 165px;
@@ -336,9 +337,6 @@
 	color: var(--ap-accent);
 }
 
-/* Expand the title link's hit area to the whole card, while keeping the
-   real buttons above it. Gives a large tap target without wrapping the
-   card in an anchor (which would nest interactive elements). */
 .ap-card__link::after {
 	content: '';
 	position: absolute;
@@ -346,7 +344,10 @@
 	z-index: 1;
 }
 
-.ap-card__media,
+.ap-card__media {
+	position: relative;
+}
+
 .ap-card__actions,
 .ap-card__cat {
 	position: relative;
