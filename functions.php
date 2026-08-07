@@ -65,4 +65,5 @@ if ( class_exists( 'WooCommerce' ) ) {
 	assurance_load( 'read-later' );     // "একটু পরে দেখুন" list.
 	assurance_load( 'emails' );         // Transactional email copy + invoice.
 	assurance_load( 'pdf-invoice' );    // Bengali font for the mPDF invoice.
+	assurance_load( 'steadfast' );      // Correct COD-due amount for the Steadfast plugin + admin screen.
 }
