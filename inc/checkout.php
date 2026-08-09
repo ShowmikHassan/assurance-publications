@@ -532,6 +532,13 @@ function assurance_shipping_breakdown_label() {
 		return '';
 	}
 
+	// A Free Shipping-flagged product (see inc/product-flags.php) makes
+	// delivery free the same way clearing the subtotal threshold does —
+	// nothing to break down.
+	if ( function_exists( 'assurance_cart_has_free_shipping_item' ) && assurance_cart_has_free_shipping_item() ) {
+		return '';
+	}
+
 	$qty = WC()->cart->get_cart_contents_count();
 
 	if ( $qty < 1 ) {

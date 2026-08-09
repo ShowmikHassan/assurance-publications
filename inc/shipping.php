@@ -62,6 +62,15 @@ function assurance_current_courier_fee() {
 		return 0.0;
 	}
 
+	// A Free Shipping-flagged product in the cart (see inc/product-flags.php)
+	// makes the courier fee zero too, same as clearing the subtotal
+	// threshold above — otherwise the COD-with-bKash-prepay flow would ask
+	// the shopper to pay a courier fee for a delivery that's supposed to be
+	// free.
+	if ( function_exists( 'assurance_cart_has_free_shipping_item' ) && assurance_cart_has_free_shipping_item() ) {
+		return 0.0;
+	}
+
 	$state = WC()->customer ? WC()->customer->get_shipping_state() : '';
 	$qty   = WC()->cart->get_cart_contents_count();
 
@@ -122,13 +131,25 @@ function assurance_register_shipping_method_class() {
 		 * @param array $package Shipping package.
 		 */
 		public function calculate_shipping( $package = array() ) {
-			$subtotal = 0.0;
+			$subtotal   = 0.0;
+			$free_item  = false;
 
 			foreach ( $package['contents'] as $item ) {
 				$subtotal += (float) $item['line_subtotal'];
+
+				// A single Free Shipping-flagged product (see
+				// inc/product-flags.php) makes the whole package free,
+				// same as clearing the subtotal threshold below — checked
+				// here, at the source, rather than with a
+				// woocommerce_package_rates filter, so the free rate also
+				// gets the right label instead of "ঢাকার ভিতরে ডেলিভারি"
+				// showing ৳0.
+				if ( ! $free_item && isset( $item['product_id'] ) && 'yes' === get_post_meta( $item['product_id'], '_is_free_shipping_item', true ) ) {
+					$free_item = true;
+				}
 			}
 
-			if ( $subtotal >= ASSURANCE_FREE_SHIPPING_MIN ) {
+			if ( $subtotal >= ASSURANCE_FREE_SHIPPING_MIN || $free_item ) {
 				$this->add_rate(
 					array(
 						'id'    => $this->get_rate_id(),

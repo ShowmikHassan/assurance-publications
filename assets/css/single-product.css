@@ -675,6 +675,48 @@
 }
 
 /* ==========================================================================
+   12. Product flag notes (Online Payment Only / Free Shipping)
+   ========================================================================== */
+
+.ap-flag-note {
+	display: flex;
+	align-items: center;
+	gap: var(--ap-s-2);
+	margin: var(--ap-s-4) 0 0;
+	padding: var(--ap-s-3) var(--ap-s-4);
+	border-radius: var(--ap-r-sm);
+	font-size: var(--ap-text-xs);
+	font-weight: var(--ap-fw-semibold);
+	line-height: var(--ap-lh-snug);
+}
+
+.ap-flag-note .ap-icon {
+	flex: none;
+}
+
+.ap-flag-note--payment {
+	background: var(--ap-brass-tint);
+	border: 1px solid rgba(80, 42, 183, 0.22);
+	/* derived from --ap-brass */
+	color: var(--ap-brass-deep);
+}
+
+.ap-flag-note--payment .ap-icon {
+	color: var(--ap-brass);
+}
+
+.ap-flag-note--freeship {
+	background: var(--ap-green-tint);
+	border: 1px solid rgba(27, 127, 76, 0.22);
+	/* derived from --ap-green */
+	color: var(--ap-green-deep);
+}
+
+.ap-flag-note--freeship .ap-icon {
+	color: var(--ap-green);
+}
+
+/* ==========================================================================
    PDF preview button (pdf-preview-modal plugin)
    --------------------------------------------------------------------------
    The plugin ships a cyan/violet animated gradient that belongs to no part
