@@ -679,34 +679,70 @@
    ========================================================================== */
 
 .ap-flag-note {
+	position: relative;
 	display: flex;
 	align-items: center;
 	gap: var(--ap-s-2);
 	margin: var(--ap-s-4) 0 0;
 	padding: var(--ap-s-3) var(--ap-s-4);
 	border-radius: var(--ap-r-sm);
+	overflow: hidden;
 	font-size: var(--ap-text-xs);
 	font-weight: var(--ap-fw-semibold);
 	line-height: var(--ap-lh-snug);
+}
+
+.ap-flag-note .ap-icon,
+.ap-flag-note>span {
+	position: relative;
+	z-index: 2;
 }
 
 .ap-flag-note .ap-icon {
 	flex: none;
 }
 
+.ap-flag-note::before {
+	content: '';
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: -60%;
+	inline-size: 40%;
+	z-index: 1;
+	background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.65) 50%, transparent 100%);
+	transform: skewX(-20deg);
+	animation: ap-flag-note-shine 4.6s ease-in-out infinite;
+}
+
+@keyframes ap-flag-note-shine {
+	0% {
+		inset-inline-start: -60%;
+	}
+
+	28% {
+		inset-inline-start: 130%;
+	}
+
+	100% {
+		inset-inline-start: 130%;
+	}
+}
+
 .ap-flag-note--payment {
-	background: var(--ap-brass-tint);
-	border: 1px solid rgba(80, 42, 183, 0.22);
-	/* derived from --ap-brass */
-	color: var(--ap-brass-deep);
+	/* Brand orange, per client direction — --ap-accent-tint is already the
+	   token for this exact wash, so no new colour needed. */
+	background: linear-gradient(135deg, #fffdfa 0%, var(--ap-accent-tint) 100%);
+	border: 1px solid rgba(234, 88, 12, 0.22);
+	/* derived from --ap-accent */
+	color: var(--ap-accent-deep);
 }
 
 .ap-flag-note--payment .ap-icon {
-	color: var(--ap-brass);
+	color: var(--ap-accent);
 }
 
 .ap-flag-note--freeship {
-	background: var(--ap-green-tint);
+	background: linear-gradient(135deg, #f5faf8 0%, var(--ap-green-tint) 100%);
 	border: 1px solid rgba(27, 127, 76, 0.22);
 	/* derived from --ap-green */
 	color: var(--ap-green-deep);

@@ -217,12 +217,10 @@ function assurance_payment_only_checkout_notice() {
 add_action( 'woocommerce_before_checkout_form', 'assurance_payment_only_checkout_notice' );
 
 /**
- * One flag note, styled to match: brass for the payment restriction (this
- * palette's colour for "seals, premium marks" — see tokens.css), green for
- * free shipping (this palette's colour for "free-shipping threshold met").
- * No shine/shimmer animation — this system stays deliberately quiet, per
- * tokens.css's own design note that the chrome should not compete with the
- * (already very loud) book covers.
+ * One flag note, styled to match: brand orange for the payment restriction
+ * (client direction — --ap-accent-tint), green for free shipping (this
+ * palette's colour for "free-shipping threshold met"). Both get a light
+ * gradient wash and a slow attention sweep — see single-product.css §12.
  *
  * @param string $type      'payment' or 'freeship' — becomes the modifier class.
  * @param string $icon_name Icon key from inc/icons.php.

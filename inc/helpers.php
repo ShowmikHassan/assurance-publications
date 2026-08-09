@@ -49,16 +49,34 @@ function assurance_cart_total_for_free_shipping() {
 /**
  * Free-shipping progress as a renderable struct.
  *
+ * A Free Shipping-flagged product in the cart (see inc/product-flags.php)
+ * meets the goal outright, the same way crossing the ৳ threshold does — the
+ * bar should read "ফ্রি ডেলিভারি উপভোগ করুন", not nag the shopper to buy
+ * ৳X more when delivery is already free because of what's already in the
+ * cart.
+ *
  * @return array{show:bool,threshold:float,current:float,remaining:float,percent:float,met:bool}
  */
 function assurance_free_shipping_progress() {
-	$threshold = assurance_free_shipping_threshold();
-	$current   = assurance_cart_total_for_free_shipping();
+	$threshold      = assurance_free_shipping_threshold();
+	$current        = assurance_cart_total_for_free_shipping();
+	$flagged_item   = function_exists( 'assurance_cart_has_free_shipping_item' ) && assurance_cart_has_free_shipping_item();
 
 	if ( $threshold <= 0 ) {
 		return array(
 			'show'      => false,
 			'threshold' => 0.0,
+			'current'   => $current,
+			'remaining' => 0.0,
+			'percent'   => 100.0,
+			'met'       => true,
+		);
+	}
+
+	if ( $flagged_item ) {
+		return array(
+			'show'      => true,
+			'threshold' => $threshold,
 			'current'   => $current,
 			'remaining' => 0.0,
 			'percent'   => 100.0,
