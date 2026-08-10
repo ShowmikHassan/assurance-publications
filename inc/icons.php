@@ -134,6 +134,10 @@ function assurance_icon_paths() {
 			'd' => 'M12 21.5S5 15.4 5 10a7 7 0 1 1 14 0c0 5.4-7 11.5-7 11.5Z',
 			'extra' => '<circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/>',
 		),
+		'globe'      => array(
+			'd'     => 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z',
+			'extra' => '<path d="M3 12h18M12 3c2.4 2.5 3.6 5.6 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.6-3.6-9S9.6 5.5 12 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+		),
 		'clock'      => array(
 			'd' => 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-14v5l3.5 2',
 		),

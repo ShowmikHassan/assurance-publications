@@ -186,14 +186,6 @@
 	margin-block-end: 0;
 }
 
-/*
- * Blocksy wraps the quantity input and Add to Cart button in its own
- * .ct-cart-actions div. That wrapper sizes itself to its content's
- * intrinsic width rather than filling form.cart — on this page that
- * left it at ~300px, so the button had no room beside the quantity
- * stepper and always dropped to its own line. Forcing it to fill the
- * available width and never wrap is what actually puts them side by side.
- */
 .woocommerce div.product form.cart .ct-cart-actions {
 	display: flex;
 	flex-wrap: nowrap;
@@ -659,11 +651,6 @@
    ========================================================================== */
 
 @media (max-width: 480px) {
-
-	/* Below ~480px even a fixed-width quantity stepper starts crowding the
-	   button's label; stack them rather than squeeze the button illegibly
-	   thin. Everywhere above this, quantity and Add to Cart stay side by
-	   side per the buy box's normal layout. */
 	.woocommerce div.product form.cart .ct-cart-actions {
 		flex-wrap: wrap;
 	}
