@@ -729,11 +729,8 @@
 }
 
 .ap-flag-note--payment {
-	/* Brand orange, per client direction — --ap-accent-tint is already the
-	   token for this exact wash, so no new colour needed. */
 	background: linear-gradient(135deg, #fffdfa 0%, var(--ap-accent-tint) 100%);
 	border: 1px solid rgba(234, 88, 12, 0.22);
-	/* derived from --ap-accent */
 	color: var(--ap-accent-deep);
 }
 
@@ -742,8 +739,8 @@
 }
 
 .ap-flag-note--freeship {
-	background: linear-gradient(135deg, #f5faf8 0%, var(--ap-green-tint) 100%);
-	border: 1px solid rgba(27, 127, 76, 0.22);
+	background: linear-gradient(135deg, #d7f0e2 0%, #bfe8d3 100%);
+	border: 1px solid rgba(27, 127, 76, 0.32);
 	/* derived from --ap-green */
 	color: var(--ap-green-deep);
 }
@@ -754,12 +751,6 @@
 
 /* ==========================================================================
    PDF preview button (pdf-preview-modal plugin)
-   --------------------------------------------------------------------------
-   The plugin ships a cyan/violet animated gradient that belongs to no part
-   of this palette. Restyled here rather than in the plugin so an update
-   cannot revert it; the element-qualified selectors outrank the plugin's
-   single-class rules without needing !important, and its own
-   pdfPreviewGlow keyframes are reused so the shimmer survives.
    ========================================================================== */
 
 a.pdf-preview-btn,
@@ -770,8 +761,6 @@ button.pdf-preview-btn {
 	font-weight: var(--ap-fw-semibold);
 	text-transform: none;
 	letter-spacing: 0;
-	/* --ap-brass is violet in this palette, so the warm mid-stop is an
-	   explicit amber rather than a token that would reintroduce purple. */
 	background: linear-gradient(90deg,
 			var(--ap-accent-deep) 0%,
 			var(--ap-accent) 28%,
