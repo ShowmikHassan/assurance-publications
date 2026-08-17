@@ -371,3 +371,78 @@ function assurance_shipping_created_notice() {
 	);
 }
 add_action( 'admin_notices', 'assurance_shipping_created_notice' );
+
+// Manual admin orders skip checkout, so the courier fee never gets set (or
+// kept in sync) the way a real checkout would. Recompute it whenever items
+// are saved — "Recalculate", "Add item(s)", and "Add shipping" all end up
+// calling wc_save_order_items(), which fires this same hook, so one
+// function covers all three.
+//
+// This deliberately runs for every payment gateway, not just COD: the
+// courier-cost formula (Dhaka vs. outside, qty tiers, free-shipping
+// threshold) is a pricing rule, not a COD-only concept, so a bKash
+// (full-online-payment) admin order needs its shipping line kept correct
+// too. Only the "_assurance_cod_courier_fee" meta below — which feeds the
+// COD-prepay "Due at Delivery" split in inc/steadfast.php — is COD-specific.
+//
+// Note: the payment-method dropdown on the admin order screen only saves
+// to the order when the page's own "Update" button is clicked — an AJAX
+// "Recalculate" click does NOT save it first. So $order->get_payment_method()
+// here reflects whatever gateway was last actually saved, not whatever the
+// dropdown currently shows unsaved in the browser.
+function assurance_admin_recalculate_courier_fee( $order_id ) {
+	$order = wc_get_order( $order_id );
+
+	if ( ! $order ) {
+		return;
+	}
+
+	$state = $order->get_shipping_state() ? $order->get_shipping_state() : $order->get_billing_state();
+
+	$qty = 0;
+	foreach ( $order->get_items() as $item ) {
+		$qty += $item->get_quantity();
+	}
+
+	$free_shipping = ( $order->get_subtotal() >= ASSURANCE_FREE_SHIPPING_MIN )
+		|| ( function_exists( 'assurance_order_has_free_shipping_item' ) && assurance_order_has_free_shipping_item( $order ) );
+
+	$fee = ( $free_shipping || $qty <= 0 ) ? 0.0 : assurance_courier_cost( assurance_is_inside_dhaka( $state ), $qty );
+
+	/** @var WC_Order_Item_Shipping|null $courier_item */
+	$courier_item = null;
+	foreach ( $order->get_items( 'shipping' ) as $item ) {
+		if ( 'assurance_courier' === $item->get_method_id() ) {
+			$courier_item = $item;
+			break;
+		}
+	}
+
+	// Manual admin orders have no shipping line at all until one is added
+	// (Add shipping) or this runs — without creating one here, the fee
+	// below would get recorded (for COD, in order meta) without ever
+	// actually being added to the order total.
+	if ( ! $courier_item && $qty > 0 ) {
+		$courier_item = new WC_Order_Item_Shipping();
+		$courier_item->set_method_id( 'assurance_courier' );
+		$courier_item->set_method_title( __( 'হোম ডেলিভারি', 'assurance' ) );
+		$order->add_item( $courier_item );
+	}
+
+	if ( $courier_item ) {
+		$courier_item->set_total( $fee );
+		$courier_item->save();
+	}
+
+	// The prepay-via-bKash / "Due at Delivery" split (inc/steadfast.php)
+	// only exists for the COD gateway — other gateways collect the courier
+	// fee as an ordinary part of the order total, so there's nothing
+	// COD-specific to record for them.
+	if ( 'assurance_cod' === $order->get_payment_method() ) {
+		$order->update_meta_data( '_assurance_cod_courier_fee', $fee );
+	}
+
+	$order->save();
+	$order->calculate_totals( false );
+}
+add_action( 'woocommerce_saved_order_items', 'assurance_admin_recalculate_courier_fee' );
