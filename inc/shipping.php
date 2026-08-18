@@ -372,24 +372,7 @@ function assurance_shipping_created_notice() {
 }
 add_action( 'admin_notices', 'assurance_shipping_created_notice' );
 
-// Manual admin orders skip checkout, so the courier fee never gets set (or
-// kept in sync) the way a real checkout would. Recompute it whenever items
-// are saved — "Recalculate", "Add item(s)", and "Add shipping" all end up
-// calling wc_save_order_items(), which fires this same hook, so one
-// function covers all three.
-//
-// This deliberately runs for every payment gateway, not just COD: the
-// courier-cost formula (Dhaka vs. outside, qty tiers, free-shipping
-// threshold) is a pricing rule, not a COD-only concept, so a bKash
-// (full-online-payment) admin order needs its shipping line kept correct
-// too. Only the "_assurance_cod_courier_fee" meta below — which feeds the
-// COD-prepay "Due at Delivery" split in inc/steadfast.php — is COD-specific.
-//
-// Note: the payment-method dropdown on the admin order screen only saves
-// to the order when the page's own "Update" button is clicked — an AJAX
-// "Recalculate" click does NOT save it first. So $order->get_payment_method()
-// here reflects whatever gateway was last actually saved, not whatever the
-// dropdown currently shows unsaved in the browser.
+// Manual admin orders skip checkout
 function assurance_admin_recalculate_courier_fee( $order_id ) {
 	$order = wc_get_order( $order_id );
 
